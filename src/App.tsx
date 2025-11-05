@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import { Header } from './components/Header'
 import { LandingPage } from './components/LandingPage'
 import { CoursesPage } from './components/CoursesPage'
+import { CourseDetailPage } from './components/CourseDetailPage'
 import { MembershipPage } from './components/MembershipPage'
 import { SignInPage } from './components/SignInPage'
 import { SignUpPage } from './components/SignUpPage'
@@ -16,10 +17,11 @@ import { usePaymentRequests } from './hooks/use-payment-requests'
 import { generateCourses } from './lib/courses'
 import { Course } from './lib/types'
 
-type Page = 'home' | 'courses' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin'
+type Page = 'home' | 'courses' | 'course-detail' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
   const [cartItems, setCartItems] = useKV<Course[]>('cartItems', [])
   const [checkoutType, setCheckoutType] = useState<'course' | 'membership'>('course')
   const [checkoutMembershipType, setCheckoutMembershipType] = useState<'weekly' | 'monthly' | 'yearly'>('weekly')
@@ -50,6 +52,12 @@ function App() {
     }
   }, [authState, currentPage])
 
+  const handleViewCourse = (course: Course) => {
+    setSelectedCourse(course)
+    setCurrentPage('course-detail')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleNavigate = (page: string) => {
     setCurrentPage(page as Page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -63,6 +71,18 @@ function App() {
       }
       return [...items, course]
     })
+  }
+
+  const handleBuyNow = (course: Course) => {
+    setCartItems(current => {
+      const items = current || []
+      if (!items.some(item => item.id === course.id)) {
+        return [...items, course]
+      }
+      return items
+    })
+    setCheckoutType('course')
+    setCurrentPage('checkout')
   }
 
   const handleRemoveFromCart = (courseId: string) => {
@@ -155,8 +175,21 @@ function App() {
         <CoursesPage
           courses={allCourses}
           onAddToCart={handleAddToCart}
+          onViewCourse={handleViewCourse}
           cartItems={cartItems || []}
           purchasedCourseIds={purchasedCourseIds}
+        />
+      )}
+
+      {currentPage === 'course-detail' && selectedCourse && (
+        <CourseDetailPage
+          course={selectedCourse}
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
+          isInCart={(cartItems || []).some(item => item.id === selectedCourse.id)}
+          isPurchased={purchasedCourseIds.includes(selectedCourse.id)}
+          onNavigate={handleNavigate}
+          isAuthenticated={authState.isAuthenticated}
         />
       )}
 

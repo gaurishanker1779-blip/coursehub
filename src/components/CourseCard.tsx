@@ -2,21 +2,24 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Course } from '@/lib/types'
-import { ShoppingCart, Check, Star, Clock, Users } from '@phosphor-icons/react'
+import { Eye, Check, Star, Clock, Users } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 interface CourseCardProps {
   course: Course
   onAddToCart: (course: Course) => void
+  onViewCourse: (course: Course) => void
   isInCart: boolean
   isPurchased: boolean
 }
 
-export function CourseCard({ course, onAddToCart, isInCart, isPurchased }: CourseCardProps) {
+export function CourseCard({ course, onAddToCart, onViewCourse, isInCart, isPurchased }: CourseCardProps) {
   return (
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
+      onClick={() => onViewCourse(course)}
+      className="cursor-pointer"
     >
       <Card className="h-full flex flex-col border-border/50 bg-card/80 backdrop-blur hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/20 transition-all duration-300 overflow-hidden group">
         <div className="relative h-52 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
@@ -92,25 +95,14 @@ export function CourseCard({ course, onAddToCart, isInCart, isPurchased }: Cours
             </Button>
           ) : (
             <Button
-              onClick={() => onAddToCart(course)}
-              disabled={isInCart}
-              className={
-                isInCart
-                  ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                  : 'bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-accent/50 transition-all duration-300'
-              }
+              onClick={(e) => {
+                e.stopPropagation()
+                onViewCourse(course)
+              }}
+              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-accent/50 transition-all duration-300"
             >
-              {isInCart ? (
-                <>
-                  <Check size={18} className="mr-2" weight="bold" />
-                  In Cart
-                </>
-              ) : (
-                <>
-                  <ShoppingCart size={18} className="mr-2" />
-                  Add to Cart
-                </>
-              )}
+              <Eye size={18} className="mr-2" />
+              View Details
             </Button>
           )}
         </CardFooter>

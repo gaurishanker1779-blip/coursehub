@@ -10,11 +10,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface CoursesPageProps {
   courses: Course[]
   onAddToCart: (course: Course) => void
+  onViewCourse: (course: Course) => void
   cartItems: Course[]
   purchasedCourseIds: string[]
 }
 
-export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseIds }: CoursesPageProps) {
+export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, purchasedCourseIds }: CoursesPageProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -228,6 +229,7 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
                   <CourseCard
                     course={course}
                     onAddToCart={onAddToCart}
+                    onViewCourse={onViewCourse}
                     isInCart={cartItems.some(item => item.id === course.id)}
                     isPurchased={purchasedCourseIds.includes(course.id)}
                   />

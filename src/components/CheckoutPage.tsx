@@ -24,7 +24,6 @@ const COUPON_CODES = {
 } as const
 
 const GST_RATE = 0.18
-const CONVENIENCE_FEE_RATE = 0.02
 
 export function CheckoutPage({ items, membershipType, membershipPrice, onConfirmPayment, onNavigate }: CheckoutPageProps) {
   const [paymentConfirmed, setPaymentConfirmed] = useState(false)
@@ -39,17 +38,15 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
       discountAmount = subtotal * (COUPON_CODES[appliedCoupon].discount / 100)
     }
 
-    const amountAfterDiscount = subtotal - discountAmount
-    const convenienceFee = amountAfterDiscount * CONVENIENCE_FEE_RATE
-    const gstAmount = (amountAfterDiscount + convenienceFee) * GST_RATE
-    const total = amountAfterDiscount + convenienceFee + gstAmount
+    const total = subtotal - discountAmount
+    const baseAmount = total / (1 + GST_RATE)
+    const gstAmount = total - baseAmount
 
     return {
       subtotal,
       discountAmount,
       discountPercentage: appliedCoupon ? COUPON_CODES[appliedCoupon].discount : 0,
-      amountAfterDiscount,
-      convenienceFee,
+      baseAmount,
       gstAmount,
       total: Math.round(total * 100) / 100,
     }
@@ -146,7 +143,7 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
 
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
+                      <span className="text-muted-foreground">Price (Incl. GST)</span>
                       <span className="font-medium">₹{calculations.subtotal.toFixed(2)}</span>
                     </div>
 
@@ -167,14 +164,18 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
                       )}
                     </AnimatePresence>
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Convenience Fee (2%)</span>
-                      <span className="font-medium">₹{calculations.convenienceFee.toFixed(2)}</span>
-                    </div>
+                    <Separator />
 
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">GST (18%)</span>
-                      <span className="font-medium">₹{calculations.gstAmount.toFixed(2)}</span>
+                    <div className="bg-muted/30 p-3 rounded-lg space-y-2 text-xs">
+                      <p className="font-semibold text-muted-foreground mb-2">Price Breakdown</p>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Base Amount</span>
+                        <span className="font-medium">₹{calculations.baseAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">GST (18%)</span>
+                        <span className="font-medium">₹{calculations.gstAmount.toFixed(2)}</span>
+                      </div>
                     </div>
 
                     <Separator />
