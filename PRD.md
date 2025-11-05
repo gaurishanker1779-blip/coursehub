@@ -20,18 +20,18 @@ A premium, professional course marketplace platform where users can browse 500+ 
 - **Success criteria**: Users can create accounts, log in, and maintain sessions across visits
 
 ### Course Catalog & Browse
-- **Functionality**: Display 500+ courses with professional images, ratings, student counts, duration, thumbnails, and pricing
-- **Purpose**: Allow users to discover and select courses that match their interests
+- **Functionality**: Display 50 courses by default from 500+ course library; search functionality reveals all 500+ courses based on query; all prices end in 99 (₹99, ₹199, ₹299, etc.); course detail URLs follow pattern: /course/{id}/{slug}
+- **Purpose**: Allow users to discover and select courses with fast initial load and comprehensive search
 - **Trigger**: User lands on platform or navigates to courses page
-- **Progression**: View landing → Browse courses → Filter/search by category/level → View course details → Add to cart
-- **Success criteria**: All courses visible with real images, filterable, searchable with clear pricing and ratings
+- **Progression**: View landing → Browse 50 featured courses → Search/filter to access full 500+ catalog → View course details → Add to cart
+- **Success criteria**: 50 courses show initially, search reveals all 500+ courses, all prices end in 99, URLs are SEO-friendly with course slugs
 
 ### Payment Request System
-- **Functionality**: Users submit payment proof (UPI) and request approval for course/membership access
-- **Purpose**: Enable purchases while maintaining admin verification control
+- **Functionality**: Users scan QR code with embedded UPI payment link (adarshkosta@fam) or manually use UPI ID for direct payment, then submit payment confirmation
+- **Purpose**: Enable purchases through UPI with admin verification control
 - **Trigger**: User completes checkout with course/membership selection
-- **Progression**: Select item → Proceed to checkout → View QR code → Upload/confirm payment → Submit request → Wait for approval
-- **Success criteria**: Payment requests created with "pending" status, visible to admin
+- **Progression**: Select item → Proceed to checkout → See actual QR code (dynamically generated with amount) and UPI ID → Pay via any UPI app → Click "I've Completed Payment" → Submit request → Wait for admin approval
+- **Success criteria**: Payment requests created with "pending" status, visible to admin, QR code displays correctly with proper UPI deep link
 
 ### Admin Panel
 - **Functionality**: Secure dashboard (username: adarsh, password: Adarshkosta@1) to view and approve/reject payment requests
@@ -55,11 +55,11 @@ A premium, professional course marketplace platform where users can browse 500+ 
 - **Success criteria**: Membership grants access to entire catalog after approval
 
 ### Landing Page Enhancements
-- **Functionality**: Eye-catching hero with animations, stats counter, 3 key benefits, testimonials carousel, trust badges
-- **Purpose**: Build trust, showcase value, and convert visitors to users
+- **Functionality**: Eye-catching hero with animations, stats counter, 3 key benefits, testimonials carousel, trust badges, FREE Python Full Stack Web Development course showcase (psychological trigger) with direct MEGA.nz link access
+- **Purpose**: Build trust, showcase value, demonstrate quality through free offering (psychological method), and convert visitors to users
 - **Trigger**: User visits homepage
-- **Progression**: View hero → See stats → Read benefits → View testimonials → Click CTA
-- **Success criteria**: Engaging first impression with smooth animations and clear value proposition
+- **Progression**: View hero → See stats → Read benefits → See FREE course offering (trust builder) → View testimonials → Click CTA
+- **Success criteria**: Engaging first impression with smooth animations, clear value proposition, prominent free course section that builds credibility and trust
 
 ## Edge Case Handling
 - **Duplicate sign-ups**: Prevent duplicate email registrations, show "already registered" message

@@ -275,35 +275,49 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5 sm:space-y-6">
-                  <div className="bg-white p-4 sm:p-6 rounded-lg flex items-center justify-center shadow-inner">
+                  <div className="bg-white p-4 sm:p-6 rounded-lg flex flex-col items-center justify-center shadow-inner">
                     <div className="text-center">
-                      <QrCode size={160} className="text-gray-800 mx-auto mb-2 sm:w-[180px] sm:h-[180px]" weight="regular" />
-                      <p className="text-xs sm:text-sm text-gray-600 font-semibold">UPI QR Code</p>
-                      <p className="text-xs text-gray-500 mt-1">Any UPI app accepted</p>
+                      <div className="w-[200px] h-[200px] sm:w-[220px] sm:h-[220px] mx-auto mb-3 bg-white rounded-lg p-2 shadow-md">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=adarshkosta@fam&pn=CourseHub&am=${calculations.total.toFixed(2)}&cu=INR`}
+                          alt="UPI QR Code"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <p className="text-sm sm:text-base text-gray-800 font-bold mb-1">Scan & Pay</p>
+                      <p className="text-xs text-gray-600">Any UPI app accepted</p>
                     </div>
                   </div>
 
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                    <p className="text-center font-bold text-lg text-primary mb-1">Amount to Pay</p>
-                    <p className="text-center text-3xl font-bold text-accent">₹{calculations.total.toFixed(2)}</p>
+                  <div className="bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary/30 rounded-lg p-4">
+                    <p className="text-center font-semibold text-sm text-muted-foreground mb-2">UPI ID</p>
+                    <div className="bg-white/50 backdrop-blur rounded-md px-4 py-2 mb-3">
+                      <p className="text-center text-base sm:text-lg font-bold text-primary select-all">adarshkosta@fam</p>
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground mb-3">Copy and paste in your UPI app</p>
+                    <div className="border-t border-border/50 pt-3">
+                      <p className="text-center font-bold text-lg text-primary mb-1">Amount to Pay</p>
+                      <p className="text-center text-3xl font-bold text-accent">₹{calculations.total.toFixed(2)}</p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
+                  <div className="space-y-2.5 text-xs sm:text-sm text-muted-foreground bg-muted/30 p-4 rounded-lg">
+                    <p className="font-semibold text-foreground mb-2">Payment Steps:</p>
                     <p className="flex items-start gap-2">
                       <span className="bg-gradient-to-br from-accent to-primary text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs font-bold">1</span>
-                      <span>Open any UPI app (GPay, PhonePe, Paytm)</span>
+                      <span>Open any UPI app (GPay, PhonePe, Paytm, etc.)</span>
                     </p>
                     <p className="flex items-start gap-2">
                       <span className="bg-gradient-to-br from-accent to-primary text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs font-bold">2</span>
-                      <span>Scan the QR code above</span>
+                      <span>Scan QR code or use UPI ID: <strong className="text-foreground">adarshkosta@fam</strong></span>
                     </p>
                     <p className="flex items-start gap-2">
                       <span className="bg-gradient-to-br from-accent to-primary text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs font-bold">3</span>
-                      <span>Confirm payment of ₹{calculations.total.toFixed(2)}</span>
+                      <span>Enter amount: <strong className="text-foreground">₹{calculations.total.toFixed(2)}</strong></span>
                     </p>
                     <p className="flex items-start gap-2">
                       <span className="bg-gradient-to-br from-accent to-primary text-white rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs font-bold">4</span>
-                      <span>Click button below after payment</span>
+                      <span>Complete payment & click button below</span>
                     </p>
                   </div>
 

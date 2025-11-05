@@ -19,13 +19,16 @@ import { Course } from './lib/types'
 
 type Page = 'home' | 'courses' | 'course-detail' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin'
 
-const updateURL = (page: string, courseId?: string) => {
+const updateURL = (page: string, courseId?: string, courseTitle?: string) => {
   const baseUrl = window.location.origin
   let newUrl = baseUrl
   
-  if (page === 'course-detail' && courseId) {
-    const courseSlug = courseId.replace('course-', '')
-    newUrl = `${baseUrl}/course/${courseSlug}`
+  if (page === 'course-detail' && courseId && courseTitle) {
+    const courseSlug = courseTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    newUrl = `${baseUrl}/course/${courseId.replace('course-', '')}/${courseSlug}`
   } else if (page === 'courses') {
     newUrl = `${baseUrl}/courses`
   } else if (page === 'membership') {
@@ -85,7 +88,7 @@ function App() {
   const handleViewCourse = (course: Course) => {
     setSelectedCourse(course)
     setCurrentPage('course-detail')
-    updateURL('course-detail', course.id)
+    updateURL('course-detail', course.id, course.title)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
