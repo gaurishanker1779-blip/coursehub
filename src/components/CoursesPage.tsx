@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { CourseCard } from './CourseCard'
 import { Course } from '@/lib/types'
-import { MagnifyingGlass, Funnel, X } from '@phosphor-icons/react'
-import { motion } from 'framer-motion'
+import { MagnifyingGlass, Funnel, X, Sparkle } from '@phosphor-icons/react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface CoursesPageProps {
   courses: Course[]
@@ -16,8 +16,20 @@ interface CoursesPageProps {
 
 export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseIds }: CoursesPageProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
+
+  useEffect(() => {
+    setIsSearching(true)
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery)
+      setIsSearching(false)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
   const categories = useMemo(() => {
     const cats = new Set(courses.map(c => c.category))
@@ -25,21 +37,29 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
   }, [courses])
 
   const filteredCourses = useMemo(() => {
+    const searchLower = debouncedSearchQuery.toLowerCase().trim()
+    
     return courses.filter(course => {
-      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           course.category.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesSearch = !searchLower || 
+        course.title.toLowerCase().includes(searchLower) ||
+        course.description.toLowerCase().includes(searchLower) ||
+        course.category.toLowerCase().includes(searchLower) ||
+        course.instructor.toLowerCase().includes(searchLower) ||
+        course.level.toLowerCase().includes(searchLower)
+      
       const matchesCategory = !selectedCategory || course.category === selectedCategory
       const matchesLevel = !selectedLevel || course.level === selectedLevel
+      
       return matchesSearch && matchesCategory && matchesLevel
     })
-  }, [courses, searchQuery, selectedCategory, selectedLevel])
+  }, [courses, debouncedSearchQuery, selectedCategory, selectedLevel])
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSelectedCategory(null)
     setSelectedLevel(null)
     setSearchQuery('')
-  }
+    setDebouncedSearchQuery('')
+  }, [])
 
   const hasActiveFilters = selectedCategory || selectedLevel || searchQuery
 
@@ -53,10 +73,11 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
           className="mb-12 text-center"
         >
           <Badge className="mb-4 bg-primary/10 text-primary border-primary/40" variant="outline">
+            <Sparkle size={16} weight="fill" className="mr-1" />
             📚 Course Library
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Explore Our <span className="bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">Course Library</span>
+            Explore Our <span className="bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent animate-gradient">Course Library</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
             Browse through {courses.length}+ premium cybersecurity and tech courses from industry experts
@@ -70,21 +91,36 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
           className="mb-8 space-y-6"
         >
           <div className="relative">
-            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={20} />
             <Input
               type="text"
-              placeholder="Search courses, categories, topics..."
+              placeholder="Search courses, categories, topics, instructors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 text-base bg-card/80 backdrop-blur border-border/50 focus:border-accent/50 shadow-lg"
+              className="pl-12 pr-20 h-14 text-base bg-card/80 backdrop-blur border-border/50 focus:border-accent/50 shadow-lg transition-all"
+              aria-label="Search courses"
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X size={20} />
-              </button>
+            <AnimatePresence>
+              {searchQuery && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => {
+                    setSearchQuery('')
+                    setDebouncedSearchQuery('')
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1 hover:bg-muted rounded-full"
+                  aria-label="Clear search"
+                >
+                  <X size={20} />
+                </motion.button>
+              )}
+            </AnimatePresence>
+            {isSearching && (
+              <div className="absolute right-12 top-1/2 -translate-y-1/2">
+                <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+              </div>
             )}
           </div>
 
@@ -122,6 +158,7 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
                             ? 'bg-gradient-to-r from-accent to-primary text-white border-0 shadow-lg shadow-accent/30'
                             : 'border-border/50 hover:border-accent/50 hover:bg-accent/5'
                         }
+                        aria-pressed={selectedCategory === category}
                       >
                         {category}
                       </Button>
@@ -148,6 +185,7 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
                               : 'bg-red-500 text-white border-0 shadow-lg hover:bg-red-600'
                             : 'border-border/50 hover:border-accent/50 hover:bg-accent/5'
                         }
+                        aria-pressed={selectedLevel === level}
                       >
                         {level}
                       </Button>
@@ -158,56 +196,67 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="border-accent/40 text-accent bg-accent/5 text-base px-4 py-1.5">
-              {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'} found
-            </Badge>
-          </div>
-        </motion.div>
-
-        {filteredCourses.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+            className="flex items-center justify-between"
           >
-            {filteredCourses.map((course, index) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: Math.min(index * 0.05, 1) }}
-              >
-                <CourseCard
-                  course={course}
-                  onAddToCart={onAddToCart}
-                  isInCart={cartItems.some(item => item.id === course.id)}
-                  isPurchased={purchasedCourseIds.includes(course.id)}
-                />
-              </motion.div>
-            ))}
+            <Badge variant="outline" className="border-accent/40 text-accent bg-accent/5 text-base px-4 py-1.5">
+              {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'} found
+            </Badge>
           </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="text-center py-20"
-          >
-            <div className="w-24 h-24 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
-              <MagnifyingGlass size={48} className="text-muted-foreground" />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">No courses found</h3>
-            <p className="text-muted-foreground text-lg mb-6">
-              Try adjusting your filters or search query
-            </p>
-            <Button onClick={clearFilters} className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg">
-              <X size={18} className="mr-2" />
-              Clear All Filters
-            </Button>
-          </motion.div>
-        )}
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {filteredCourses.length > 0 ? (
+            <motion.div
+              key="courses-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+            >
+              {filteredCourses.map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: Math.min(index * 0.02, 0.5) }}
+                  layout
+                >
+                  <CourseCard
+                    course={course}
+                    onAddToCart={onAddToCart}
+                    isInCart={cartItems.some(item => item.id === course.id)}
+                    isPurchased={purchasedCourseIds.includes(course.id)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="no-results"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4 }}
+              className="text-center py-20"
+            >
+              <div className="w-24 h-24 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
+                <MagnifyingGlass size={48} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">No courses found</h3>
+              <p className="text-muted-foreground text-lg mb-6">
+                Try adjusting your filters or search query
+              </p>
+              <Button onClick={clearFilters} className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg">
+                <X size={18} className="mr-2" />
+                Clear All Filters
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
