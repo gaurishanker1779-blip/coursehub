@@ -143,7 +143,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </motion.div>
             
             <motion.h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
@@ -155,7 +155,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </motion.h1>
             
             <motion.p 
-              className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed font-light"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed font-light px-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
@@ -164,7 +164,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </motion.p>
             
             <motion.div 
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center mb-12 px-4 w-full sm:w-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
@@ -172,7 +172,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               <Button
                 size="lg"
                 onClick={() => onNavigate('courses')}
-                className="bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-lg px-10 py-7 group shadow-2xl shadow-accent/50 hover:shadow-accent/70 transition-all duration-300 transform hover:scale-105"
+                className="bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-base sm:text-lg px-6 sm:px-10 py-6 sm:py-7 group shadow-2xl shadow-accent/50 hover:shadow-accent/70 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
               >
                 <Play size={20} weight="fill" className="mr-2" />
                 Start Learning Now
@@ -182,7 +182,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 size="lg"
                 variant="outline"
                 onClick={() => onNavigate('membership')}
-                className="border-2 border-accent/40 text-accent hover:bg-accent/10 text-lg px-10 py-7 backdrop-blur-sm"
+                className="border-2 border-accent/40 text-accent hover:bg-accent/10 text-base sm:text-lg px-6 sm:px-10 py-6 sm:py-7 backdrop-blur-sm w-full sm:w-auto"
               >
                 Get Access
               </Button>
@@ -192,14 +192,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="flex items-center justify-center gap-6 text-sm text-muted-foreground"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground px-4"
             >
               <div className="flex items-center gap-2">
-                <CheckCircle size={20} className="text-green-500" weight="fill" />
+                <CheckCircle size={18} className="text-green-500 shrink-0" weight="fill" />
                 <span>No Credit Card Required</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle size={20} className="text-green-500" weight="fill" />
+                <CheckCircle size={18} className="text-green-500 shrink-0" weight="fill" />
                 <span>Cancel Anytime</span>
               </div>
             </motion.div>
@@ -209,7 +209,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-16 sm:mt-20 md:mt-24 px-4"
           >
             {stats.map((stat, index) => (
               <motion.div
@@ -219,14 +219,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <motion.div 
-                  className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent mb-2"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent mb-2"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 1.2 + index * 0.1, type: "spring", stiffness: 200 }}
                 >
                   {stat.value}
                 </motion.div>
-                <div className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
+                <div className="text-xs sm:text-sm md:text-base text-muted-foreground font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -255,7 +255,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -266,23 +266,23 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 whileHover={{ y: -8, scale: 1.02 }}
               >
                 <Card className="h-full border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/20 transition-all duration-500 group">
-                  <CardContent className="p-8 text-center">
+                  <CardContent className="p-6 sm:p-8 text-center">
                     <motion.div 
-                      className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-4 sm:mb-6 mx-auto group-hover:scale-110 transition-transform duration-300"
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.6 }}
                     >
-                      <feature.icon size={36} className="text-accent" weight="duotone" />
+                      <feature.icon size={32} className="text-accent sm:w-9 sm:h-9" weight="duotone" />
                     </motion.div>
-                    <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors">{feature.title}</h3>
-                    <p className="text-muted-foreground text-base leading-relaxed">{feature.description}</p>
+                    <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 group-hover:text-accent transition-colors">{feature.title}</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
@@ -293,12 +293,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 whileHover={{ y: -4 }}
               >
                 <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                      <benefit.icon size={28} className="text-primary" weight="duotone" />
+                  <CardContent className="p-5 sm:p-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+                      <benefit.icon size={24} className="text-primary sm:w-7 sm:h-7" weight="duotone" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{benefit.description}</p>
+                    <h3 className="text-base sm:text-lg font-semibold mb-1.5 sm:mb-2">{benefit.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{benefit.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -336,27 +336,27 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               transition={{ duration: 0.5 }}
             >
               <Card className="border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur shadow-2xl">
-                <CardContent className="p-10 md:p-14">
-                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <CardContent className="p-6 sm:p-8 md:p-10 lg:p-14">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8">
                     <motion.img
                       src={testimonials[activeTestimonial].image}
                       alt={testimonials[activeTestimonial].name}
-                      className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-accent/50 shadow-lg"
+                      className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full border-4 border-accent/50 shadow-lg shrink-0"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     />
                     <div className="flex-1 text-center md:text-left">
-                      <div className="flex justify-center md:justify-start gap-1 mb-4">
+                      <div className="flex justify-center md:justify-start gap-1 mb-3 sm:mb-4">
                         {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
-                          <Star key={i} size={24} weight="fill" className="text-yellow-500" />
+                          <Star key={i} size={20} weight="fill" className="text-yellow-500 sm:w-6 sm:h-6" />
                         ))}
                       </div>
-                      <p className="text-xl md:text-2xl text-foreground mb-6 leading-relaxed italic">
+                      <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground mb-4 sm:mb-6 leading-relaxed italic">
                         "{testimonials[activeTestimonial].quote}"
                       </p>
                       <div>
-                        <div className="font-bold text-lg text-accent">{testimonials[activeTestimonial].name}</div>
-                        <div className="text-muted-foreground">{testimonials[activeTestimonial].role}</div>
+                        <div className="font-bold text-base sm:text-lg text-accent">{testimonials[activeTestimonial].name}</div>
+                        <div className="text-sm sm:text-base text-muted-foreground">{testimonials[activeTestimonial].role}</div>
                       </div>
                     </div>
                   </div>
@@ -390,19 +390,19 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto px-4"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-white">
               Ready to Transform Your Career?
             </h2>
-            <p className="text-white/90 text-lg md:text-xl mb-10 leading-relaxed">
+            <p className="text-white/90 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 leading-relaxed">
               Join 10,000+ learners who are already mastering in-demand skills. Start your journey today!
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <Button
                 size="lg"
                 onClick={() => onNavigate('signup')}
-                className="bg-white text-primary hover:bg-white/90 text-lg px-10 py-7 shadow-2xl hover:shadow-white/50 transition-all duration-300 transform hover:scale-105"
+                className="bg-white text-primary hover:bg-white/90 text-base sm:text-lg px-6 sm:px-10 py-6 sm:py-7 shadow-2xl hover:shadow-white/50 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
               >
                 Create Free Account
               </Button>
@@ -410,7 +410,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 size="lg"
                 variant="outline"
                 onClick={() => onNavigate('courses')}
-                className="border-2 border-white text-white hover:bg-white/10 text-lg px-10 py-7 backdrop-blur-sm"
+                className="border-2 border-white text-white hover:bg-white/10 text-base sm:text-lg px-6 sm:px-10 py-6 sm:py-7 backdrop-blur-sm w-full sm:w-auto"
               >
                 Explore Courses
               </Button>
