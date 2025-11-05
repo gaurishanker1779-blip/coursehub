@@ -62,6 +62,24 @@ const topics = [
 
 const prices = [199, 299, 399, 499, 599, 259, 359, 459, 559]
 
+const courseImages = [
+  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop'
+]
+
 export function generateCourses(count: number = 500): Course[] {
   const courses: Course[] = []
   
@@ -71,6 +89,7 @@ export function generateCourses(count: number = 500): Course[] {
     const topic = topics[Math.floor(Math.random() * topics.length)]
     const price = prices[Math.floor(Math.random() * prices.length)]
     const level = ['Beginner', 'Intermediate', 'Advanced'][Math.floor(Math.random() * 3)] as Course['level']
+    const imageIndex = i % courseImages.length
     
     courses.push({
       id: `course-${i + 1}`,
@@ -79,8 +98,12 @@ export function generateCourses(count: number = 500): Course[] {
       category,
       price,
       level,
-      thumbnail: `https://picsum.photos/seed/${i + 1}/400/300`,
-      courseLink: `https://example.com/course/${i + 1}`
+      thumbnail: courseImages[imageIndex],
+      courseLink: `https://example.com/course/${i + 1}`,
+      rating: (4 + Math.random()).toFixed(1),
+      students: Math.floor(Math.random() * 10000) + 500,
+      duration: `${Math.floor(Math.random() * 20) + 5} hours`,
+      instructor: 'Expert Instructor'
     })
   }
   

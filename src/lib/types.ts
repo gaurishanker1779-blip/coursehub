@@ -7,6 +7,10 @@ export interface Course {
   level: 'Beginner' | 'Intermediate' | 'Advanced'
   thumbnail: string
   courseLink: string
+  rating: string
+  students: number
+  duration: string
+  instructor: string
 }
 
 export interface User {

@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { CourseCard } from './CourseCard'
 import { Course } from '@/lib/types'
-import { MagnifyingGlass, Funnel } from '@phosphor-icons/react'
+import { MagnifyingGlass, Funnel, X } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
 
 interface CoursesPageProps {
   courses: Course[]
@@ -26,7 +27,8 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           course.description.toLowerCase().includes(searchQuery.toLowerCase())
+                           course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           course.category.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesCategory = !selectedCategory || course.category === selectedCategory
       const matchesLevel = !selectedLevel || course.level === selectedLevel
       return matchesSearch && matchesCategory && matchesLevel
@@ -42,109 +44,169 @@ export function CoursesPage({ courses, onAddToCart, cartItems, purchasedCourseId
   const hasActiveFilters = selectedCategory || selectedLevel || searchQuery
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-gradient-to-b from-background via-background to-card/30">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">
-            Explore Our <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Course Library</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
+        >
+          <Badge className="mb-4 bg-primary/10 text-primary border-primary/40" variant="outline">
+            📚 Course Library
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Explore Our <span className="bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">Course Library</span>
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Browse through {courses.length}+ premium cybersecurity and tech courses
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
+            Browse through {courses.length}+ premium cybersecurity and tech courses from industry experts
           </p>
-        </div>
+        </motion.div>
 
-        <div className="mb-8 space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8 space-y-6"
+        >
           <div className="relative">
-            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
             <Input
               type="text"
-              placeholder="Search courses..."
+              placeholder="Search courses, categories, topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 bg-card/50 border-border/50"
+              className="pl-12 h-14 text-base bg-card/80 backdrop-blur border-border/50 focus:border-accent/50 shadow-lg"
             />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Funnel size={20} className="text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">Filters:</span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
-                  className={
-                    selectedCategory === category
-                      ? 'bg-accent/20 border-accent text-accent'
-                      : 'border-border/50 hover:border-accent/50'
-                  }
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              {(['Beginner', 'Intermediate', 'Advanced'] as const).map(level => (
-                <Button
-                  key={level}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedLevel(selectedLevel === level ? null : level)}
-                  className={
-                    selectedLevel === level
-                      ? 'bg-accent/20 border-accent text-accent'
-                      : 'border-border/50 hover:border-accent/50'
-                  }
-                >
-                  {level}
-                </Button>
-              ))}
-            </div>
-
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="text-muted-foreground"
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                Clear Filters
-              </Button>
+                <X size={20} />
+              </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Badge variant="outline" className="border-accent/40 text-accent">
-              {filteredCourses.length} courses found
+          <div className="bg-card/50 backdrop-blur border border-border/50 rounded-xl p-6 shadow-lg">
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <Funnel size={20} className="text-accent" weight="fill" />
+                <span className="text-sm font-semibold">Filters</span>
+              </div>
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10 ml-auto"
+                >
+                  <X size={16} className="mr-1" />
+                  Clear All
+                </Button>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">Category</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(category => (
+                    <motion.div key={category} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
+                        className={
+                          selectedCategory === category
+                            ? 'bg-gradient-to-r from-accent to-primary text-white border-0 shadow-lg shadow-accent/30'
+                            : 'border-border/50 hover:border-accent/50 hover:bg-accent/5'
+                        }
+                      >
+                        {category}
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">Difficulty Level</label>
+                <div className="flex flex-wrap gap-2">
+                  {(['Beginner', 'Intermediate', 'Advanced'] as const).map(level => (
+                    <motion.div key={level} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedLevel(selectedLevel === level ? null : level)}
+                        className={
+                          selectedLevel === level
+                            ? level === 'Beginner'
+                              ? 'bg-green-500 text-white border-0 shadow-lg hover:bg-green-600'
+                              : level === 'Intermediate'
+                              ? 'bg-yellow-500 text-white border-0 shadow-lg hover:bg-yellow-600'
+                              : 'bg-red-500 text-white border-0 shadow-lg hover:bg-red-600'
+                            : 'border-border/50 hover:border-accent/50 hover:bg-accent/5'
+                        }
+                      >
+                        {level}
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Badge variant="outline" className="border-accent/40 text-accent bg-accent/5 text-base px-4 py-1.5">
+              {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'} found
             </Badge>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredCourses.map(course => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              onAddToCart={onAddToCart}
-              isInCart={cartItems.some(item => item.id === course.id)}
-              isPurchased={purchasedCourseIds.includes(course.id)}
-            />
-          ))}
-        </div>
-
-        {filteredCourses.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg mb-4">No courses found matching your criteria</p>
-            <Button onClick={clearFilters} variant="outline">
-              Clear Filters
+        {filteredCourses.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            {filteredCourses.map((course, index) => (
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: Math.min(index * 0.05, 1) }}
+              >
+                <CourseCard
+                  course={course}
+                  onAddToCart={onAddToCart}
+                  isInCart={cartItems.some(item => item.id === course.id)}
+                  isPurchased={purchasedCourseIds.includes(course.id)}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="text-center py-20"
+          >
+            <div className="w-24 h-24 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-6">
+              <MagnifyingGlass size={48} className="text-muted-foreground" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">No courses found</h3>
+            <p className="text-muted-foreground text-lg mb-6">
+              Try adjusting your filters or search query
+            </p>
+            <Button onClick={clearFilters} className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg">
+              <X size={18} className="mr-2" />
+              Clear All Filters
             </Button>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
