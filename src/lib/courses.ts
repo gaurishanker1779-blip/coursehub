@@ -60,7 +60,7 @@ const topics = [
   'Purple Team Collaboration'
 ]
 
-const prices = [199, 299, 399, 499, 599, 259, 359, 459, 559]
+const prices = [99, 199, 299, 399, 499, 599, 149, 249, 349, 449, 549]
 
 const courseImages = [
   'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop',

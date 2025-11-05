@@ -307,6 +307,121 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         </motion.div>
       </section>
 
+      <section className="py-20 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-teal-500/10 border-y border-green-500/20">
+        <div className="container mx-auto px-6 md:px-12 lg:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="text-center mb-10">
+              <Badge className="mb-4 bg-green-500/20 text-green-500 border-green-500/40 text-base px-4 py-1.5" variant="outline">
+                🎁 FREE COURSE AVAILABLE
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+                <span className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                  Start Learning for FREE!
+                </span>
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Get instant access to our premium Python Full Stack Web Development course - absolutely free!
+              </p>
+            </div>
+
+            <motion.div
+              whileHover={{ y: -5, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card className="border-2 border-green-500/30 bg-gradient-to-br from-card/90 to-card/60 backdrop-blur shadow-2xl hover:shadow-green-500/20 transition-all duration-500">
+                <CardContent className="p-6 sm:p-8 md:p-10">
+                  <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+                    <div className="relative rounded-xl overflow-hidden shadow-2xl group">
+                      <img
+                        src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&h=600&fit=crop"
+                        alt="Python Full Stack Development"
+                        className="w-full h-64 md:h-80 object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                        <Badge className="bg-green-500 text-white border-0 text-sm px-3 py-1.5 font-bold">
+                          100% FREE
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-2xl sm:text-3xl font-bold mb-3">
+                          Python Full Stack Web Development
+                        </h3>
+                        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-4">
+                          Complete course covering Python, Django, Flask, React, databases, and deployment. Build real-world projects and launch your web development career.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={18} weight="fill" className="text-green-500 shrink-0" />
+                          <span>50+ Hours Content</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={18} weight="fill" className="text-green-500 shrink-0" />
+                          <span>Lifetime Access</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={18} weight="fill" className="text-green-500 shrink-0" />
+                          <span>10+ Projects</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle size={18} weight="fill" className="text-green-500 shrink-0" />
+                          <span>Certificate</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 space-y-3">
+                        <Button
+                          onClick={() => window.open('https://mega.nz/folder/CJxVRLgA#GCMngA08ukSDoGmbHtFp9g', '_blank')}
+                          size="lg"
+                          className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg text-base font-semibold"
+                        >
+                          <Play size={20} className="mr-2" weight="fill" />
+                          Access Free Course Now
+                        </Button>
+                        <p className="text-xs text-center text-muted-foreground">
+                          ✨ No credit card required • Instant access • 100% Free forever
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <img
+                              key={i}
+                              src={`https://i.pravatar.cc/150?u=student${i}`}
+                              alt=""
+                              className="w-8 h-8 rounded-full border-2 border-background"
+                            />
+                          ))}
+                        </div>
+                        <span>Join 2,500+ students already enrolled</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-border/50">
+                    <p className="text-center text-xs sm:text-sm text-muted-foreground">
+                      💡 <strong className="text-foreground">Why we offer this free?</strong> We believe in quality education for everyone. 
+                      Try this course to experience our teaching style, then explore our premium catalog with 500+ courses!
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       <section className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 overflow-hidden">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
           <motion.div

@@ -19,6 +19,36 @@ import { Course } from './lib/types'
 
 type Page = 'home' | 'courses' | 'course-detail' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin'
 
+const updateURL = (page: string, courseId?: string) => {
+  const baseUrl = window.location.origin
+  let newUrl = baseUrl
+  
+  if (page === 'course-detail' && courseId) {
+    const courseSlug = courseId.replace('course-', '')
+    newUrl = `${baseUrl}/course/${courseSlug}`
+  } else if (page === 'courses') {
+    newUrl = `${baseUrl}/courses`
+  } else if (page === 'membership') {
+    newUrl = `${baseUrl}/membership`
+  } else if (page === 'cart') {
+    newUrl = `${baseUrl}/cart`
+  } else if (page === 'checkout') {
+    newUrl = `${baseUrl}/checkout`
+  } else if (page === 'my-courses') {
+    newUrl = `${baseUrl}/my-courses`
+  } else if (page === 'signin') {
+    newUrl = `${baseUrl}/signin`
+  } else if (page === 'signup') {
+    newUrl = `${baseUrl}/signup`
+  } else if (page === 'admin') {
+    newUrl = `${baseUrl}/admin`
+  } else {
+    newUrl = baseUrl
+  }
+  
+  window.history.pushState({}, '', newUrl)
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
@@ -55,11 +85,13 @@ function App() {
   const handleViewCourse = (course: Course) => {
     setSelectedCourse(course)
     setCurrentPage('course-detail')
+    updateURL('course-detail', course.id)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page as Page)
+    updateURL(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 

@@ -40,7 +40,7 @@ export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, pur
   const filteredCourses = useMemo(() => {
     const searchLower = debouncedSearchQuery.toLowerCase().trim()
     
-    return courses.filter(course => {
+    const filtered = courses.filter(course => {
       const matchesSearch = !searchLower || 
         course.title.toLowerCase().includes(searchLower) ||
         course.description.toLowerCase().includes(searchLower) ||
@@ -53,6 +53,12 @@ export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, pur
       
       return matchesSearch && matchesCategory && matchesLevel
     })
+
+    if (!searchLower && !selectedCategory && !selectedLevel) {
+      return filtered.slice(0, 50)
+    }
+    
+    return filtered
   }, [courses, debouncedSearchQuery, selectedCategory, selectedLevel])
 
   const clearFilters = useCallback(() => {
