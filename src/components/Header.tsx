@@ -33,8 +33,8 @@ export function Header({ authState, onSignOut, onNavigate, currentPage, cartCoun
             CourseHub
           </motion.button>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {['home', 'courses', 'membership'].map((page) => (
+          <nav className="hidden md:flex items-center gap-6">
+            {['home', 'courses', 'membership', 'about'].map((page) => (
               <motion.button
                 key={page}
                 onClick={() => handleNavigate(page)}
@@ -71,6 +71,22 @@ export function Header({ authState, onSignOut, onNavigate, currentPage, cartCoun
                 )}
               </motion.button>
             )}
+            <motion.button
+              onClick={() => handleNavigate('contact')}
+              className={`text-sm font-medium transition-colors relative ${
+                currentPage === 'contact' ? 'text-accent' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Contact
+              {currentPage === 'contact' && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute -bottom-[1.3rem] left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-primary"
+                />
+              )}
+            </motion.button>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -184,6 +200,22 @@ export function Header({ authState, onSignOut, onNavigate, currentPage, cartCoun
                 }`}
               >
                 Membership
+              </button>
+              <button
+                onClick={() => handleNavigate('about')}
+                className={`text-left py-2 px-4 rounded-lg transition-colors ${
+                  currentPage === 'about' ? 'bg-accent/10 text-accent' : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                About
+              </button>
+              <button
+                onClick={() => handleNavigate('contact')}
+                className={`text-left py-2 px-4 rounded-lg transition-colors ${
+                  currentPage === 'contact' ? 'bg-accent/10 text-accent' : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                Contact
               </button>
               {authState.isAuthenticated && !authState.isAdmin && (
                 <button

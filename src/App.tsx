@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Toaster } from 'sonner'
 import { Header } from './components/Header'
+import { Footer } from './components/Footer'
 import { LandingPage } from './components/LandingPage'
 import { CoursesPage } from './components/CoursesPage'
 import { CourseDetailPage } from './components/CourseDetailPage'
@@ -12,12 +13,18 @@ import { CartPage } from './components/CartPage'
 import { CheckoutPage } from './components/CheckoutPage'
 import { MyCoursesPage } from './components/MyCoursesPage'
 import { AdminPanel } from './components/AdminPanel'
+import { AboutPage } from './components/AboutPage'
+import { ContactPage } from './components/ContactPage'
+import { FAQPage } from './components/FAQPage'
+import { PrivacyPolicyPage } from './components/PrivacyPolicyPage'
+import { TermsPage } from './components/TermsPage'
+import { RefundPolicyPage } from './components/RefundPolicyPage'
 import { useAuth } from './hooks/use-auth'
 import { usePaymentRequests } from './hooks/use-payment-requests'
 import { generateCourses } from './lib/courses'
 import { Course } from './lib/types'
 
-type Page = 'home' | 'courses' | 'course-detail' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin'
+type Page = 'home' | 'courses' | 'course-detail' | 'membership' | 'signin' | 'signup' | 'cart' | 'checkout' | 'my-courses' | 'admin' | 'about' | 'contact' | 'faq' | 'privacy' | 'terms' | 'refund'
 
 const updateURL = (page: string, courseId?: string, courseTitle?: string) => {
   const baseUrl = window.location.origin
@@ -193,7 +200,7 @@ function App() {
   const userRequests = authState.user ? getUserRequests(authState.user.id) : []
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Header
         authState={authState}
         onSignOut={signOut}
@@ -202,90 +209,118 @@ function App() {
         cartCount={(cartItems || []).length}
       />
 
-      {currentPage === 'home' && (
-        <LandingPage onNavigate={handleNavigate} />
-      )}
+      <main className="flex-1">
+        {currentPage === 'home' && (
+          <LandingPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'courses' && (
-        <CoursesPage
-          courses={allCourses}
-          onAddToCart={handleAddToCart}
-          onViewCourse={handleViewCourse}
-          cartItems={cartItems || []}
-          purchasedCourseIds={purchasedCourseIds}
-        />
-      )}
+        {currentPage === 'courses' && (
+          <CoursesPage
+            courses={allCourses}
+            onAddToCart={handleAddToCart}
+            onViewCourse={handleViewCourse}
+            cartItems={cartItems || []}
+            purchasedCourseIds={purchasedCourseIds}
+          />
+        )}
 
-      {currentPage === 'course-detail' && selectedCourse && (
-        <CourseDetailPage
-          course={selectedCourse}
-          onAddToCart={handleAddToCart}
-          onBuyNow={handleBuyNow}
-          isInCart={(cartItems || []).some(item => item.id === selectedCourse.id)}
-          isPurchased={purchasedCourseIds.includes(selectedCourse.id)}
-          onNavigate={handleNavigate}
-          isAuthenticated={authState.isAuthenticated}
-        />
-      )}
+        {currentPage === 'course-detail' && selectedCourse && (
+          <CourseDetailPage
+            course={selectedCourse}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            isInCart={(cartItems || []).some(item => item.id === selectedCourse.id)}
+            isPurchased={purchasedCourseIds.includes(selectedCourse.id)}
+            onNavigate={handleNavigate}
+            isAuthenticated={authState.isAuthenticated}
+          />
+        )}
 
-      {currentPage === 'membership' && (
-        <MembershipPage
-          onSelectPlan={handleSelectMembershipPlan}
-          isAuthenticated={authState.isAuthenticated}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'membership' && (
+          <MembershipPage
+            onSelectPlan={handleSelectMembershipPlan}
+            isAuthenticated={authState.isAuthenticated}
+            onNavigate={handleNavigate}
+          />
+        )}
 
-      {currentPage === 'signin' && (
-        <SignInPage
-          onSignIn={signIn}
-          onAdminSignIn={adminSignIn}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'about' && (
+          <AboutPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'signup' && (
-        <SignUpPage
-          onSignUp={signUp}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'contact' && (
+          <ContactPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'cart' && (
-        <CartPage
-          cartItems={cartItems || []}
-          onRemoveFromCart={handleRemoveFromCart}
-          onCheckout={handleCheckout}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'faq' && (
+          <FAQPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'checkout' && (
-        <CheckoutPage
-          items={checkoutType === 'course' ? (cartItems || []) : []}
-          membershipType={checkoutType === 'membership' ? checkoutMembershipType : undefined}
-          membershipPrice={checkoutType === 'membership' ? checkoutMembershipPrice : undefined}
-          onConfirmPayment={handleConfirmPayment}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'privacy' && (
+          <PrivacyPolicyPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'my-courses' && authState.user && (
-        <MyCoursesPage
-          purchasedCourses={purchasedCourses}
-          userRequests={userRequests}
-          user={authState.user}
-          onNavigate={handleNavigate}
-        />
-      )}
+        {currentPage === 'terms' && (
+          <TermsPage onNavigate={handleNavigate} />
+        )}
 
-      {currentPage === 'admin' && authState.isAdmin && (
-        <AdminPanel
-          paymentRequests={paymentRequests}
-          onApprovePayment={handleApprovePayment}
-          onRejectPayment={rejectPaymentRequest}
-        />
-      )}
+        {currentPage === 'refund' && (
+          <RefundPolicyPage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'signin' && (
+          <SignInPage
+            onSignIn={signIn}
+            onAdminSignIn={adminSignIn}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'signup' && (
+          <SignUpPage
+            onSignUp={signUp}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'cart' && (
+          <CartPage
+            cartItems={cartItems || []}
+            onRemoveFromCart={handleRemoveFromCart}
+            onCheckout={handleCheckout}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'checkout' && (
+          <CheckoutPage
+            items={checkoutType === 'course' ? (cartItems || []) : []}
+            membershipType={checkoutType === 'membership' ? checkoutMembershipType : undefined}
+            membershipPrice={checkoutType === 'membership' ? checkoutMembershipPrice : undefined}
+            onConfirmPayment={handleConfirmPayment}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'my-courses' && authState.user && (
+          <MyCoursesPage
+            purchasedCourses={purchasedCourses}
+            userRequests={userRequests}
+            user={authState.user}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'admin' && authState.isAdmin && (
+          <AdminPanel
+            paymentRequests={paymentRequests}
+            onApprovePayment={handleApprovePayment}
+            onRejectPayment={rejectPaymentRequest}
+          />
+        )}
+      </main>
+
+      <Footer onNavigate={handleNavigate} />
 
       <Toaster position="top-right" richColors />
     </div>
