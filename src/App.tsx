@@ -146,7 +146,7 @@ function App() {
     setCurrentPage('checkout')
   }
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = (customerInfo: any) => {
     if (!authState.user) return
 
     if (checkoutType === 'membership') {
@@ -156,7 +156,8 @@ function App() {
         'membership',
         checkoutMembershipPrice,
         undefined,
-        checkoutMembershipType
+        checkoutMembershipType,
+        customerInfo
       )
     } else {
       const items = cartItems || []
@@ -166,7 +167,9 @@ function App() {
           authState.user!.email,
           'course',
           course.price,
-          course.id
+          course.id,
+          undefined,
+          customerInfo
         )
       })
       setCartItems([])

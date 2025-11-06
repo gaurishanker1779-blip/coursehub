@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
-import { Course } from '@/lib/types'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Course, CustomerInfo } from '@/lib/types'
 import { QrCode, CheckCircle, Tag, X } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -13,7 +15,7 @@ interface CheckoutPageProps {
   items: Course[]
   membershipType?: 'weekly' | 'monthly' | 'yearly'
   membershipPrice?: number
-  onConfirmPayment: () => void
+  onConfirmPayment: (customerInfo: CustomerInfo) => void
   onNavigate: (page: string) => void
 }
 
@@ -29,6 +31,13 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
   const [paymentConfirmed, setPaymentConfirmed] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<keyof typeof COUPON_CODES | null>(null)
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: ''
+  })
 
   const subtotal = membershipPrice || items.reduce((sum, item) => sum + item.price, 0)
 
@@ -69,9 +78,30 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
   }
 
   const handleConfirmPayment = () => {
+    if (!customerInfo.firstName.trim()) {
+      toast.error('Please enter your first name')
+      return
+    }
+    if (!customerInfo.lastName.trim()) {
+      toast.error('Please enter your last name')
+      return
+    }
+    if (!customerInfo.email.trim()) {
+      toast.error('Please enter your email address')
+      return
+    }
+    if (!customerInfo.phone.trim()) {
+      toast.error('Please enter your phone number')
+      return
+    }
+    if (!customerInfo.address.trim()) {
+      toast.error('Please enter your home address')
+      return
+    }
+
     setPaymentConfirmed(true)
     toast.success('Payment request submitted! Waiting for admin approval.')
-    onConfirmPayment()
+    onConfirmPayment(customerInfo)
     setTimeout(() => {
       onNavigate('my-courses')
     }, 2000)
@@ -90,6 +120,74 @@ export function CheckoutPage({ items, membershipType, membershipPrice, onConfirm
 
           <div className="grid lg:grid-cols-5 gap-6 sm:gap-8">
             <div className="lg:col-span-3 space-y-6">
+              <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-lg sm:text-xl">Customer Information</CardTitle>
+                  <CardDescription className="text-sm">
+                    Please provide your details for payment confirmation
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name *</Label>
+                      <Input
+                        id="firstName"
+                        placeholder="John"
+                        value={customerInfo.firstName}
+                        onChange={(e) => setCustomerInfo(prev => ({ ...prev, firstName: e.target.value }))}
+                        className="bg-background/50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Input
+                        id="lastName"
+                        placeholder="Doe"
+                        value={customerInfo.lastName}
+                        onChange={(e) => setCustomerInfo(prev => ({ ...prev, lastName: e.target.value }))}
+                        className="bg-background/50"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john.doe@example.com"
+                      value={customerInfo.email}
+                      onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
+                      className="bg-background/50"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      value={customerInfo.phone}
+                      onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                      className="bg-background/50"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Home Address *</Label>
+                    <Textarea
+                      id="address"
+                      placeholder="Enter your complete address with city, state, and pincode"
+                      value={customerInfo.address}
+                      onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
+                      className="bg-background/50 min-h-[100px]"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="border-border/50 bg-card/50 backdrop-blur shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-lg sm:text-xl">Order Summary</CardTitle>

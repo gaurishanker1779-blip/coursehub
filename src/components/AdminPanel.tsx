@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { PaymentRequest } from '@/lib/types'
-import { CheckCircle, XCircle, Clock } from '@phosphor-icons/react'
+import { CheckCircle, XCircle, Clock, User, Envelope, Phone, MapPin } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 interface AdminPanelProps {
@@ -13,6 +15,7 @@ interface AdminPanelProps {
 }
 
 export function AdminPanel({ paymentRequests, onApprovePayment, onRejectPayment }: AdminPanelProps) {
+  const [selectedRequest, setSelectedRequest] = useState<PaymentRequest | null>(null)
   const pendingRequests = paymentRequests.filter(req => req.status === 'pending')
   const approvedRequests = paymentRequests.filter(req => req.status === 'approved')
   const rejectedRequests = paymentRequests.filter(req => req.status === 'rejected')
@@ -96,11 +99,20 @@ export function AdminPanel({ paymentRequests, onApprovePayment, onRejectPayment 
                       {paymentRequests.sort((a, b) => 
                         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                       ).map(request => (
-                        <TableRow key={request.id}>
+                        <TableRow key={request.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedRequest(request)}>
                           <TableCell className="text-xs sm:text-sm text-muted-foreground">
                             {formatDate(request.createdAt)}
                           </TableCell>
-                          <TableCell className="font-medium text-xs sm:text-sm">{request.userEmail}</TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium text-xs sm:text-sm">{request.userEmail}</p>
+                              {request.customerInfo && (
+                                <p className="text-xs text-muted-foreground">
+                                  {request.customerInfo.firstName} {request.customerInfo.lastName}
+                                </p>
+                              )}
+                            </div>
+                          </TableCell>
                           <TableCell>
                             <Badge variant="outline" className="text-xs">
                               {request.type === 'membership' ? `Membership - ${request.membershipType}` : 'Course'}
@@ -127,7 +139,7 @@ export function AdminPanel({ paymentRequests, onApprovePayment, onRejectPayment 
                               </Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-right">
+                          <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                             {request.status === 'pending' && (
                               <div className="flex gap-1 sm:gap-2 justify-end">
                                 <Button
@@ -165,6 +177,144 @@ export function AdminPanel({ paymentRequests, onApprovePayment, onRejectPayment 
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Payment Request Details</DialogTitle>
+            <DialogDescription>
+              Complete information about this payment request
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRequest && (
+            <div className="space-y-6">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Payment ID</p>
+                  <p className="text-sm font-medium">{selectedRequest.id}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Date</p>
+                  <p className="text-sm font-medium">{formatDate(selectedRequest.createdAt)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Type</p>
+                  <Badge variant="outline">
+                    {selectedRequest.type === 'membership' 
+                      ? `Membership - ${selectedRequest.membershipType}` 
+                      : 'Course'}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Amount</p>
+                  <p className="text-lg font-bold text-accent">₹{selectedRequest.amount}</p>
+                </div>
+              </div>
+
+              <div className="border-t border-border pt-4">
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                  <User size={18} className="text-primary" />
+                  Customer Information
+                </h3>
+                
+                {selectedRequest.customerInfo ? (
+                  <div className="space-y-4 bg-muted/30 p-4 rounded-lg">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                          <User size={14} />
+                          First Name
+                        </p>
+                        <p className="text-sm font-medium">{selectedRequest.customerInfo.firstName}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                          <User size={14} />
+                          Last Name
+                        </p>
+                        <p className="text-sm font-medium">{selectedRequest.customerInfo.lastName}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Envelope size={14} />
+                        Email Address
+                      </p>
+                      <p className="text-sm font-medium">{selectedRequest.customerInfo.email}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <Phone size={14} />
+                        Phone Number
+                      </p>
+                      <p className="text-sm font-medium">{selectedRequest.customerInfo.phone}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                        <MapPin size={14} />
+                        Home Address
+                      </p>
+                      <p className="text-sm font-medium whitespace-pre-line">{selectedRequest.customerInfo.address}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic bg-muted/30 p-4 rounded-lg">
+                    No customer information provided for this payment request.
+                  </p>
+                )}
+              </div>
+
+              {selectedRequest.status === 'pending' && (
+                <div className="flex gap-3 pt-4 border-t border-border">
+                  <Button
+                    onClick={() => {
+                      handleApprove(selectedRequest.id)
+                      setSelectedRequest(null)
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600"
+                  >
+                    <CheckCircle size={18} className="mr-2" weight="bold" />
+                    Approve Payment
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleReject(selectedRequest.id)
+                      setSelectedRequest(null)
+                    }}
+                    variant="outline"
+                    className="flex-1 border-red-500/40 text-red-400 hover:bg-red-500/10"
+                  >
+                    <XCircle size={18} className="mr-2" weight="bold" />
+                    Reject Payment
+                  </Button>
+                </div>
+              )}
+              
+              {selectedRequest.status === 'approved' && (
+                <div className="bg-green-500/10 border border-green-500/40 rounded-lg p-4">
+                  <p className="text-green-500 font-semibold text-sm flex items-center gap-2">
+                    <CheckCircle size={16} weight="fill" />
+                    Payment Approved on {formatDate(selectedRequest.approvedAt!)}
+                  </p>
+                </div>
+              )}
+              
+              {selectedRequest.status === 'rejected' && (
+                <div className="bg-red-500/10 border border-red-500/40 rounded-lg p-4">
+                  <p className="text-red-500 font-semibold text-sm flex items-center gap-2">
+                    <XCircle size={16} weight="fill" />
+                    Payment Rejected
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

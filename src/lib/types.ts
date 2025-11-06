@@ -31,6 +31,14 @@ export interface Membership {
   active: boolean
 }
 
+export interface CustomerInfo {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  address: string
+}
+
 export interface PaymentRequest {
   id: string
   userId: string
@@ -42,6 +50,7 @@ export interface PaymentRequest {
   status: 'pending' | 'approved' | 'rejected'
   createdAt: string
   approvedAt?: string
+  customerInfo?: CustomerInfo
 }
 
 export interface PurchasedCourse {

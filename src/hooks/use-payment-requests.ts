@@ -1,5 +1,5 @@
 import { useKV } from '@github/spark/hooks'
-import { PaymentRequest, PurchasedCourse } from '@/lib/types'
+import { PaymentRequest, PurchasedCourse, CustomerInfo } from '@/lib/types'
 
 export function usePaymentRequests() {
   const [paymentRequests, setPaymentRequests] = useKV<PaymentRequest[]>('paymentRequests', [])
@@ -11,7 +11,8 @@ export function usePaymentRequests() {
     type: 'course' | 'membership',
     amount: number,
     courseId?: string,
-    membershipType?: 'weekly' | 'monthly' | 'yearly'
+    membershipType?: 'weekly' | 'monthly' | 'yearly',
+    customerInfo?: CustomerInfo
   ): string => {
     const newRequest: PaymentRequest = {
       id: `payment-${Date.now()}`,
@@ -22,7 +23,8 @@ export function usePaymentRequests() {
       membershipType,
       amount,
       status: 'pending',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      customerInfo
     }
 
     setPaymentRequests(current => [...(current || []), newRequest])
