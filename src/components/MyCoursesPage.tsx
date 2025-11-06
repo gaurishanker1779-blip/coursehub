@@ -111,9 +111,13 @@ export function MyCoursesPage({ purchasedCourses, userRequests, user, onNavigate
                       loading="lazy"
                     />
                     <div className="absolute top-2 right-2">
-                      <Badge className="bg-green-500/20 text-green-300 border-green-500/40 text-xs">
+                      <Badge className={
+                        course.isFree 
+                          ? "bg-green-500/20 text-green-300 border-green-500/40 text-xs"
+                          : "bg-blue-500/20 text-blue-300 border-blue-500/40 text-xs"
+                      }>
                         <CheckCircle size={12} className="mr-1" weight="fill" />
-                        Purchased
+                        {course.isFree ? 'Enrolled' : 'Purchased'}
                       </Badge>
                     </div>
                   </div>

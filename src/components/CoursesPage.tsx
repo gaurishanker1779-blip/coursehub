@@ -13,9 +13,10 @@ interface CoursesPageProps {
   onViewCourse: (course: Course) => void
   cartItems: Course[]
   purchasedCourseIds: string[]
+  enrolledCourseIds?: string[]
 }
 
-export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, purchasedCourseIds }: CoursesPageProps) {
+export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, purchasedCourseIds, enrolledCourseIds = [] }: CoursesPageProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -238,6 +239,7 @@ export function CoursesPage({ courses, onAddToCart, onViewCourse, cartItems, pur
                     onViewCourse={onViewCourse}
                     isInCart={cartItems.some(item => item.id === course.id)}
                     isPurchased={purchasedCourseIds.includes(course.id)}
+                    isEnrolled={enrolledCourseIds.includes(course.id)}
                   />
                 </motion.div>
               ))}

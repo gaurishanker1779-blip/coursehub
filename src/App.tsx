@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Toaster } from 'sonner'
+import { toast } from 'sonner'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { LandingPage } from './components/LandingPage'
@@ -21,6 +22,7 @@ import { TermsPage } from './components/TermsPage'
 import { RefundPolicyPage } from './components/RefundPolicyPage'
 import { useAuth } from './hooks/use-auth'
 import { usePaymentRequests } from './hooks/use-payment-requests'
+import { useFreeCourses } from './hooks/use-free-courses'
 import { generateCourses } from './lib/courses'
 import { Course } from './lib/types'
 
@@ -77,6 +79,7 @@ function App() {
     getPendingRequests,
     getUserRequests
   } = usePaymentRequests()
+  const { enrollInFreeCourse, getUserEnrolledCourses, isEnrolledInCourse } = useFreeCourses()
 
   const allCourses = useMemo(() => generateCourses(500), [])
 
@@ -187,15 +190,34 @@ function App() {
     }
   }
 
+  const handleFreeAccess = (course: Course) => {
+    if (!authState.user) return
+
+    const result = enrollInFreeCourse(authState.user.id, course.id)
+    if (result.success) {
+      toast.success(result.message)
+      setCurrentPage('my-courses')
+    } else {
+      toast.info(result.message)
+    }
+  }
+
+  const enrolledCourseIds = authState.user ? getUserEnrolledCourses(authState.user.id) : []
   const purchasedCourseIds = authState.user 
     ? getUserPurchasedCourses(authState.user.id).map(pc => pc.courseId)
     : []
 
   const purchasedCourses = authState.user
     ? (authState.user.membership?.active 
-        ? allCourses 
-        : allCourses.filter(course => purchasedCourseIds.includes(course.id)))
+        ? allCourses.filter(c => !c.isFree)
+        : allCourses.filter(course => purchasedCourseIds.includes(course.id) && !course.isFree))
     : []
+
+  const enrolledFreeCourses = authState.user
+    ? allCourses.filter(course => enrolledCourseIds.includes(course.id))
+    : []
+
+  const allUserCourses = [...purchasedCourses, ...enrolledFreeCourses]
 
   const userRequests = authState.user ? getUserRequests(authState.user.id) : []
 
@@ -221,6 +243,7 @@ function App() {
             onViewCourse={handleViewCourse}
             cartItems={cartItems || []}
             purchasedCourseIds={purchasedCourseIds}
+            enrolledCourseIds={enrolledCourseIds}
           />
         )}
 
@@ -229,8 +252,10 @@ function App() {
             course={selectedCourse}
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
+            onFreeAccess={handleFreeAccess}
             isInCart={(cartItems || []).some(item => item.id === selectedCourse.id)}
             isPurchased={purchasedCourseIds.includes(selectedCourse.id)}
+            isEnrolled={enrolledCourseIds.includes(selectedCourse.id)}
             onNavigate={handleNavigate}
             isAuthenticated={authState.isAuthenticated}
           />
@@ -304,7 +329,7 @@ function App() {
 
         {currentPage === 'my-courses' && authState.user && (
           <MyCoursesPage
-            purchasedCourses={purchasedCourses}
+            purchasedCourses={allUserCourses}
             userRequests={userRequests}
             user={authState.user}
             onNavigate={handleNavigate}

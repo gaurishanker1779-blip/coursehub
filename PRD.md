@@ -20,11 +20,11 @@ A premium, professional course marketplace platform where users can browse 500+ 
 - **Success criteria**: Users can create accounts, log in, and maintain sessions across visits
 
 ### Course Catalog & Browse
-- **Functionality**: Display 50 courses by default from 500+ course library; search functionality reveals all 500+ courses based on query; all prices end in 99 (₹99, ₹199, ₹299, etc.); course detail URLs follow pattern: /course/{id}/{slug}
-- **Purpose**: Allow users to discover and select courses with fast initial load and comprehensive search
+- **Functionality**: Display 50 courses by default from 500+ course library; search functionality reveals all 500+ courses based on query; all prices end in 99 (₹99, ₹199, ₹299, etc.); course detail URLs follow pattern: /course/{id}/{slug}; FREE courses show detailed curriculum first, require "Free Access" button click to save to My Courses before accessing link
+- **Purpose**: Allow users to discover and select courses with fast initial load and comprehensive search; build trust through free courses that showcase value before requiring registration
 - **Trigger**: User lands on platform or navigates to courses page
-- **Progression**: View landing → Browse 50 featured courses → Search/filter to access full 500+ catalog → View course details → Add to cart
-- **Success criteria**: 50 courses show initially, search reveals all 500+ courses, all prices end in 99, URLs are SEO-friendly with course slugs
+- **Progression**: View landing → Browse 50 featured courses → Search/filter to access full 500+ catalog → View course details (see full curriculum for free courses) → For free courses: Click "Free Access" → Save to My Courses → Access link from My Courses | For paid: Add to cart
+- **Success criteria**: 50 courses show initially, search reveals all 500+ courses, all prices end in 99, URLs are SEO-friendly with course slugs, free courses show full details and require explicit "Free Access" action before link is accessible
 
 ### Payment Request System
 - **Functionality**: Users scan QR code with embedded UPI payment link (adarshkosta@fam) or manually use UPI ID for direct payment, then submit payment confirmation

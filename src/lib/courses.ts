@@ -62,6 +62,38 @@ const topics = [
 
 const prices = [99, 199, 299, 399, 499, 599, 699, 799, 899, 999, 1099, 1199, 1299, 1399, 1499]
 
+const freeCourseTopics = [
+  'Python Basics',
+  'HTML & CSS Fundamentals',
+  'JavaScript for Beginners',
+  'Introduction to Cybersecurity',
+  'Git & GitHub Essentials'
+]
+
+const generateCurriculum = (topic: string): string[] => {
+  return [
+    `Introduction to ${topic}`,
+    `Setting up your development environment`,
+    `Core concepts and fundamentals`,
+    `Hands-on practice with real examples`,
+    `Best practices and common patterns`,
+    `Building your first project`,
+    `Advanced techniques and tips`,
+    `Final project and certification`
+  ]
+}
+
+const generateWhatYouLearn = (topic: string): string[] => {
+  return [
+    `Master the fundamentals of ${topic.toLowerCase()}`,
+    'Build real-world projects from scratch',
+    'Understand industry best practices',
+    'Get hands-on experience with practical exercises',
+    'Learn at your own pace with lifetime access',
+    'Join a community of thousands of learners'
+  ]
+}
+
 const courseImages = [
   'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop',
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop',
@@ -91,19 +123,25 @@ export function generateCourses(count: number = 500): Course[] {
     const level = ['Beginner', 'Intermediate', 'Advanced'][Math.floor(Math.random() * 3)] as Course['level']
     const imageIndex = i % courseImages.length
     
+    const isFree = i < 5
+    const courseTitle = isFree ? freeCourseTopics[i] : `${titlePrefix} ${topic}`
+    
     courses.push({
       id: `course-${i + 1}`,
-      title: `${titlePrefix} ${topic}`,
-      description: `Learn ${topic.toLowerCase()} from industry experts with real-world examples and hands-on labs. This comprehensive course covers everything you need to master ${topic.toLowerCase()} in ${category.toLowerCase()}.`,
-      category,
-      price,
-      level,
+      title: courseTitle,
+      description: `Learn ${(isFree ? freeCourseTopics[i] : topic).toLowerCase()} from industry experts with real-world examples and hands-on labs. This comprehensive course covers everything you need to master ${(isFree ? freeCourseTopics[i] : topic).toLowerCase()} in ${category.toLowerCase()}.`,
+      category: isFree ? 'Free Courses' : category,
+      price: isFree ? 0 : price,
+      isFree,
+      level: isFree ? 'Beginner' : level,
       thumbnail: courseImages[imageIndex],
-      courseLink: `https://example.com/course/${i + 1}`,
+      courseLink: `https://mega.nz/folder/${i + 1}`,
       rating: (4 + Math.random()).toFixed(1),
       students: Math.floor(Math.random() * 10000) + 500,
       duration: `${Math.floor(Math.random() * 20) + 5} hours`,
-      instructor: 'Expert Instructor'
+      instructor: 'Expert Instructor',
+      curriculum: isFree ? generateCurriculum(freeCourseTopics[i]) : undefined,
+      whatYouLearn: isFree ? generateWhatYouLearn(freeCourseTopics[i]) : undefined
     })
   }
   

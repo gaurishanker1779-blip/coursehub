@@ -4,6 +4,7 @@ export interface Course {
   description: string
   category: string
   price: number
+  isFree?: boolean
   level: 'Beginner' | 'Intermediate' | 'Advanced'
   thumbnail: string
   courseLink: string
@@ -11,6 +12,8 @@ export interface Course {
   students: number
   duration: string
   instructor: string
+  curriculum?: string[]
+  whatYouLearn?: string[]
 }
 
 export interface User {

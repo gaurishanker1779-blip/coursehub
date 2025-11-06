@@ -11,9 +11,10 @@ interface CourseCardProps {
   onViewCourse: (course: Course) => void
   isInCart: boolean
   isPurchased: boolean
+  isEnrolled?: boolean
 }
 
-export function CourseCard({ course, onAddToCart, onViewCourse, isInCart, isPurchased }: CourseCardProps) {
+export function CourseCard({ course, onAddToCart, onViewCourse, isInCart, isPurchased, isEnrolled }: CourseCardProps) {
   return (
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
@@ -48,11 +49,13 @@ export function CourseCard({ course, onAddToCart, onViewCourse, isInCart, isPurc
             </Badge>
           </div>
 
-          <div className="absolute top-3 left-3">
-            <Badge variant="secondary" className="bg-black/70 text-white border-0 backdrop-blur shadow-lg">
-              {course.category}
-            </Badge>
-          </div>
+          {course.isFree && (
+            <div className="absolute top-3 left-3">
+              <Badge variant="secondary" className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 backdrop-blur shadow-lg font-bold">
+                FREE
+              </Badge>
+            </div>
+          )}
         </div>
 
         <CardContent className="flex-1 p-6">
@@ -85,25 +88,52 @@ export function CourseCard({ course, onAddToCart, onViewCourse, isInCart, isPurc
         </CardContent>
 
         <CardFooter className="p-6 pt-0 flex items-center justify-between border-t border-border/50">
-          <div className="text-2xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-            ₹{course.price}
-          </div>
-          {isPurchased ? (
-            <Button disabled className="bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/20">
-              <Check size={18} className="mr-2" weight="bold" />
-              Purchased
-            </Button>
+          {course.isFree ? (
+            <>
+              <div className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                FREE
+              </div>
+              {isEnrolled ? (
+                <Button disabled className="bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/20">
+                  <Check size={18} className="mr-2" weight="bold" />
+                  Enrolled
+                </Button>
+              ) : (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onViewCourse(course)
+                  }}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg hover:shadow-green-500/50 transition-all duration-300"
+                >
+                  <Eye size={18} className="mr-2" />
+                  View Details
+                </Button>
+              )}
+            </>
           ) : (
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                onViewCourse(course)
-              }}
-              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-accent/50 transition-all duration-300"
-            >
-              <Eye size={18} className="mr-2" />
-              View Details
-            </Button>
+            <>
+              <div className="text-2xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                ₹{course.price}
+              </div>
+              {isPurchased ? (
+                <Button disabled className="bg-green-500/20 text-green-400 border border-green-500/40 hover:bg-green-500/20">
+                  <Check size={18} className="mr-2" weight="bold" />
+                  Purchased
+                </Button>
+              ) : (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onViewCourse(course)
+                  }}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-accent/50 transition-all duration-300"
+                >
+                  <Eye size={18} className="mr-2" />
+                  View Details
+                </Button>
+              )}
+            </>
           )}
         </CardFooter>
       </Card>

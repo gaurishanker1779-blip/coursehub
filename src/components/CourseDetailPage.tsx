@@ -28,8 +28,10 @@ interface CourseDetailPageProps {
   course: Course
   onAddToCart: (course: Course) => void
   onBuyNow: (course: Course) => void
+  onFreeAccess?: (course: Course) => void
   isInCart: boolean
   isPurchased: boolean
+  isEnrolled?: boolean
   onNavigate: (page: string) => void
   isAuthenticated: boolean
 }
@@ -132,15 +134,24 @@ export function CourseDetailPage({
   course,
   onAddToCart,
   onBuyNow,
+  onFreeAccess,
   isInCart,
   isPurchased,
+  isEnrolled,
   onNavigate,
   isAuthenticated
 }: CourseDetailPageProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'curriculum' | 'reviews'>('overview')
   const reviews = generateReviews(course.title, parseFloat(course.rating))
-  const learningOutcomes = generateLearningOutcomes(course.category)
-  const courseContent = generateCourseContent(course.duration)
+  const learningOutcomes = course.whatYouLearn || generateLearningOutcomes(course.category)
+  const courseContent = course.curriculum 
+    ? course.curriculum.map((item, idx) => ({
+        title: item,
+        lessons: Math.floor(Math.random() * 8) + 4,
+        duration: `${Math.floor(Math.random() * 60) + 30}m`,
+        locked: false
+      }))
+    : generateCourseContent(course.duration)
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -159,6 +170,17 @@ export function CourseDetailPage({
       return
     }
     onBuyNow(course)
+  }
+
+  const handleFreeAccess = () => {
+    if (!isAuthenticated) {
+      toast.error('Please sign in to get free access')
+      onNavigate('signin')
+      return
+    }
+    if (onFreeAccess) {
+      onFreeAccess(course)
+    }
   }
 
   const gstIncluded = (course.price * 0.18).toFixed(2)
@@ -486,26 +508,58 @@ export function CourseDetailPage({
             >
               <Card className="border-border/50 bg-card/50 backdrop-blur shadow-2xl">
                 <CardContent className="p-6 space-y-6">
-                  <div>
-                    <div className="flex items-baseline gap-2 mb-2">
-                      <span className="text-4xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                        ₹{course.price}
-                      </span>
-                      <span className="text-sm text-muted-foreground line-through">
-                        ₹{(course.price * 1.5).toFixed(0)}
-                      </span>
+                  {course.isFree ? (
+                    <div>
+                      <div className="flex items-baseline gap-2 mb-2">
+                        <span className="text-4xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                          FREE
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Full access at no cost
+                      </p>
+                      <div className="mt-2 inline-block bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-xs font-semibold">
+                        100% FREE FOREVER
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Inclusive of GST: ₹{gstIncluded} (18%)
-                    </p>
-                    <div className="mt-2 inline-block bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-xs font-semibold">
-                      {Math.round(((course.price * 1.5 - course.price) / (course.price * 1.5)) * 100)}% OFF
+                  ) : (
+                    <div>
+                      <div className="flex items-baseline gap-2 mb-2">
+                        <span className="text-4xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                          ₹{course.price}
+                        </span>
+                        <span className="text-sm text-muted-foreground line-through">
+                          ₹{(course.price * 1.5).toFixed(0)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Inclusive of GST: ₹{gstIncluded} (18%)
+                      </p>
+                      <div className="mt-2 inline-block bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-xs font-semibold">
+                        {Math.round(((course.price * 1.5 - course.price) / (course.price * 1.5)) * 100)}% OFF
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <Separator />
 
-                  {isPurchased ? (
+                  {course.isFree ? (
+                    isEnrolled ? (
+                      <Button disabled className="w-full bg-green-500/20 text-green-400 border border-green-500/40">
+                        <Check size={20} className="mr-2" weight="bold" />
+                        Enrolled - Check My Courses
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleFreeAccess}
+                        size="lg"
+                        className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg text-base font-semibold"
+                      >
+                        <Play size={20} className="mr-2" weight="fill" />
+                        Get Free Access
+                      </Button>
+                    )
+                  ) : isPurchased ? (
                     <Button disabled className="w-full bg-green-500/20 text-green-400 border border-green-500/40">
                       <Check size={20} className="mr-2" weight="bold" />
                       Already Purchased
