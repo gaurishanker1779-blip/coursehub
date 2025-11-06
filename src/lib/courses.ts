@@ -62,35 +62,38 @@ const topics = [
 
 const prices = [99, 199, 299, 399, 499, 599, 699, 799, 899, 999, 1099, 1199, 1299, 1399, 1499]
 
-const freeCourseTopics = [
-  'Python Basics',
-  'HTML & CSS Fundamentals',
-  'JavaScript for Beginners',
-  'Introduction to Cybersecurity',
-  'Git & GitHub Essentials'
-]
-
-const generateCurriculum = (topic: string): string[] => {
-  return [
-    `Introduction to ${topic}`,
-    `Setting up your development environment`,
-    `Core concepts and fundamentals`,
-    `Hands-on practice with real examples`,
-    `Best practices and common patterns`,
-    `Building your first project`,
-    `Advanced techniques and tips`,
-    `Final project and certification`
-  ]
-}
-
-const generateWhatYouLearn = (topic: string): string[] => {
-  return [
-    `Master the fundamentals of ${topic.toLowerCase()}`,
-    'Build real-world projects from scratch',
-    'Understand industry best practices',
-    'Get hands-on experience with practical exercises',
-    'Learn at your own pace with lifetime access',
-    'Join a community of thousands of learners'
+const pythonCourseDetails = {
+  title: 'Python Full Stack Web Development',
+  description: 'Complete course covering Python, Django, Flask, React, databases, and deployment. Build real-world projects and launch your web development career.',
+  duration: '50+ Hours',
+  projects: '10+ Projects',
+  curriculum: [
+    'Python Fundamentals & Advanced Concepts',
+    'Object-Oriented Programming in Python',
+    'Django Framework - Backend Development',
+    'Flask Microservices & REST APIs',
+    'React.js - Modern Frontend Development',
+    'Database Design & Management (SQL & NoSQL)',
+    'User Authentication & Authorization',
+    'Building Real-World Full Stack Applications',
+    'API Integration & Third-Party Services',
+    'Deployment & DevOps (AWS, Heroku, Docker)',
+    'Testing & Debugging Best Practices',
+    'Version Control with Git & GitHub',
+    'Final Capstone Project'
+  ],
+  whatYouLearn: [
+    'Master Python programming from basics to advanced',
+    'Build complete web applications with Django and Flask',
+    'Create modern, responsive frontends with React',
+    'Design and manage databases effectively',
+    'Implement secure user authentication systems',
+    'Deploy applications to production servers',
+    'Work with APIs and integrate third-party services',
+    'Follow industry best practices and coding standards',
+    'Build 10+ real-world projects for your portfolio',
+    'Get lifetime access to all course materials',
+    'Earn a certificate of completion'
   ]
 }
 
@@ -115,7 +118,25 @@ const courseImages = [
 export function generateCourses(count: number = 500): Course[] {
   const courses: Course[] = []
   
-  for (let i = 0; i < count; i++) {
+  courses.push({
+    id: 'course-1',
+    title: pythonCourseDetails.title,
+    description: pythonCourseDetails.description,
+    category: 'Free Courses',
+    price: 0,
+    isFree: true,
+    level: 'Beginner',
+    thumbnail: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop',
+    courseLink: 'https://mega.nz/folder/python-full-stack',
+    rating: '4.9',
+    students: 15420,
+    duration: pythonCourseDetails.duration,
+    instructor: 'Expert Instructor',
+    curriculum: pythonCourseDetails.curriculum,
+    whatYouLearn: pythonCourseDetails.whatYouLearn
+  })
+  
+  for (let i = 1; i < count; i++) {
     const category = categories[i % categories.length]
     const titlePrefix = titles[Math.floor(Math.random() * titles.length)]
     const topic = topics[Math.floor(Math.random() * topics.length)]
@@ -123,25 +144,20 @@ export function generateCourses(count: number = 500): Course[] {
     const level = ['Beginner', 'Intermediate', 'Advanced'][Math.floor(Math.random() * 3)] as Course['level']
     const imageIndex = i % courseImages.length
     
-    const isFree = i < 5
-    const courseTitle = isFree ? freeCourseTopics[i] : `${titlePrefix} ${topic}`
-    
     courses.push({
       id: `course-${i + 1}`,
-      title: courseTitle,
-      description: `Learn ${(isFree ? freeCourseTopics[i] : topic).toLowerCase()} from industry experts with real-world examples and hands-on labs. This comprehensive course covers everything you need to master ${(isFree ? freeCourseTopics[i] : topic).toLowerCase()} in ${category.toLowerCase()}.`,
-      category: isFree ? 'Free Courses' : category,
-      price: isFree ? 0 : price,
-      isFree,
-      level: isFree ? 'Beginner' : level,
+      title: `${titlePrefix} ${topic}`,
+      description: `Learn ${topic.toLowerCase()} from industry experts with real-world examples and hands-on labs. This comprehensive course covers everything you need to master ${topic.toLowerCase()} in ${category.toLowerCase()}.`,
+      category,
+      price,
+      isFree: false,
+      level,
       thumbnail: courseImages[imageIndex],
       courseLink: `https://mega.nz/folder/${i + 1}`,
       rating: (4 + Math.random()).toFixed(1),
       students: Math.floor(Math.random() * 10000) + 500,
       duration: `${Math.floor(Math.random() * 20) + 5} hours`,
-      instructor: 'Expert Instructor',
-      curriculum: isFree ? generateCurriculum(freeCourseTopics[i]) : undefined,
-      whatYouLearn: isFree ? generateWhatYouLearn(freeCourseTopics[i]) : undefined
+      instructor: 'Expert Instructor'
     })
   }
   
