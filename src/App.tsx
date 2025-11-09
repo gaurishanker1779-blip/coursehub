@@ -61,9 +61,43 @@ const updateURL = (page: string, courseId?: string, courseTitle?: string) => {
   window.history.pushState({}, '', newUrl)
 }
 
+const parseInitialRoute = (): { page: Page; courseId?: string } => {
+  const path = window.location.pathname
+  
+  if (path === '/' || path === '') return { page: 'home' }
+  if (path === '/courses') return { page: 'courses' }
+  if (path === '/membership') return { page: 'membership' }
+  if (path === '/cart') return { page: 'cart' }
+  if (path === '/checkout') return { page: 'checkout' }
+  if (path === '/my-courses') return { page: 'my-courses' }
+  if (path === '/signin') return { page: 'signin' }
+  if (path === '/signup') return { page: 'signup' }
+  if (path === '/admin') return { page: 'admin' }
+  if (path === '/about') return { page: 'about' }
+  if (path === '/contact') return { page: 'contact' }
+  if (path === '/faq') return { page: 'faq' }
+  if (path === '/privacy') return { page: 'privacy' }
+  if (path === '/terms') return { page: 'terms' }
+  if (path === '/refund') return { page: 'refund' }
+  
+  const courseMatch = path.match(/^\/course\/(\d+)\//)
+  if (courseMatch) {
+    return { page: 'course-detail', courseId: `course-${courseMatch[1]}` }
+  }
+  
+  return { page: 'home' }
+}
+
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home')
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+  const allCourses = useMemo(() => generateCourses(500), [])
+  
+  const initialRoute = useMemo(() => parseInitialRoute(), [])
+  const initialCourse = initialRoute.courseId 
+    ? allCourses.find(c => c.id === initialRoute.courseId) || null
+    : null
+
+  const [currentPage, setCurrentPage] = useState<Page>(initialRoute.page)
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(initialCourse)
   const [cartItems, setCartItems] = useKV<Course[]>('cartItems', [])
   const [checkoutType, setCheckoutType] = useState<'course' | 'membership'>('course')
   const [checkoutMembershipType, setCheckoutMembershipType] = useState<'weekly' | 'monthly' | 'yearly'>('weekly')
@@ -80,8 +114,6 @@ function App() {
     getUserRequests
   } = usePaymentRequests()
   const { enrollInFreeCourse, getUserEnrolledCourses, isEnrolledInCourse } = useFreeCourses()
-
-  const allCourses = useMemo(() => generateCourses(500), [])
 
   useEffect(() => {
     if (!authState.isAuthenticated && (currentPage === 'my-courses' || currentPage === 'checkout' || currentPage === 'cart')) {
@@ -223,6 +255,22 @@ function App() {
   const allUserCourses = [...purchasedCourses, ...enrolledFreeCourses]
 
   const userRequests = authState.user ? getUserRequests(authState.user.id) : []
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = parseInitialRoute()
+      setCurrentPage(route.page)
+      if (route.courseId) {
+        const course = allCourses.find(c => c.id === route.courseId)
+        if (course) {
+          setSelectedCourse(course)
+        }
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [allCourses])
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
