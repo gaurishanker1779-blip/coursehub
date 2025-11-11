@@ -20,6 +20,7 @@ import { FAQPage } from './components/FAQPage'
 import { PrivacyPolicyPage } from './components/PrivacyPolicyPage'
 import { TermsPage } from './components/TermsPage'
 import { RefundPolicyPage } from './components/RefundPolicyPage'
+import { DopamineRewards } from './components/DopamineRewards'
 import { useAuth } from './hooks/use-auth'
 import { usePaymentRequests } from './hooks/use-payment-requests'
 import { useFreeCourses } from './hooks/use-free-courses'
@@ -102,6 +103,7 @@ function App() {
   const [checkoutType, setCheckoutType] = useState<'course' | 'membership'>('course')
   const [checkoutMembershipType, setCheckoutMembershipType] = useState<'weekly' | 'monthly' | 'yearly'>('weekly')
   const [checkoutMembershipPrice, setCheckoutMembershipPrice] = useState(0)
+  const [dopamineReward, setDopamineReward] = useState<'enroll' | 'purchase' | 'complete' | 'login' | 'streak' | undefined>()
 
   const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership } = useAuth()
   const {
@@ -230,8 +232,14 @@ function App() {
 
     const result = enrollInFreeCourse(authState.user.id, course.id)
     if (result.success) {
-      toast.success(result.message)
-      setCurrentPage('my-courses')
+      setDopamineReward('enroll')
+      toast.success(result.message, {
+        description: '🎉 Start learning now! Check "My Courses" to access it.',
+        duration: 4000
+      })
+      setTimeout(() => {
+        setCurrentPage('my-courses')
+      }, 1500)
     } else {
       toast.info(result.message)
     }
@@ -274,6 +282,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <DopamineRewards trigger={dopamineReward} onClose={() => setDopamineReward(undefined)} />
+      
       <Header
         authState={authState}
         onSignOut={signOut}
