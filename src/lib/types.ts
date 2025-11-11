@@ -23,6 +23,7 @@ export interface User {
   name: string
   createdAt: string
   membership?: Membership
+  customerInfo?: CustomerInfo
 }
 
 export interface Membership {

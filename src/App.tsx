@@ -105,7 +105,7 @@ function App() {
   const [checkoutMembershipPrice, setCheckoutMembershipPrice] = useState(0)
   const [dopamineReward, setDopamineReward] = useState<'enroll' | 'purchase' | 'complete' | 'login' | 'streak' | undefined>()
 
-  const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership, users } = useAuth()
+  const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership, updateUserCheckoutInfo, users } = useAuth()
   const {
     paymentRequests,
     createPaymentRequest,
@@ -182,6 +182,8 @@ function App() {
 
   const handleConfirmPayment = (customerInfo: any) => {
     if (!authState.user) return
+
+    updateUserCheckoutInfo(authState.user.id, customerInfo)
 
     if (checkoutType === 'membership') {
       createPaymentRequest(

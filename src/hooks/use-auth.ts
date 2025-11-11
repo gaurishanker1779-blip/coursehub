@@ -1,18 +1,34 @@
 import { useKV } from '@github/spark/hooks'
-import { User, AuthState } from '@/lib/types'
-import { useState, useEffect } from 'react'
+import { User, AuthState, CustomerInfo } from '@/lib/types'
+import { useEffect } from 'react'
 
 const ADMIN_USERNAME = 'adarsh'
 const ADMIN_PASSWORD = 'Adarshkosta@1'
 
+const DEFAULT_AUTH_STATE: AuthState = {
+  isAuthenticated: false,
+  user: null,
+  isAdmin: false
+}
+
 export function useAuth() {
-  const [users, setUsers] = useKV<User[]>('users', [])
+  const [users, setUsers] = useKV<User[]>('users-database', [])
+  const [currentSession, setCurrentSession] = useKV<AuthState>('current-session', DEFAULT_AUTH_STATE)
   
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    user: null,
-    isAdmin: false
-  })
+  const authState = currentSession || DEFAULT_AUTH_STATE
+
+  useEffect(() => {
+    if (authState.user) {
+      const updatedUser = users?.find(u => u.id === authState.user!.id)
+      if (updatedUser && JSON.stringify(updatedUser) !== JSON.stringify(authState.user)) {
+        setCurrentSession({
+          isAuthenticated: true,
+          isAdmin: false,
+          user: updatedUser
+        })
+      }
+    }
+  }, [users])
 
   const signUp = (email: string, password: string, name: string): { success: boolean; message: string } => {
     const existingUser = users?.find(u => u.email === email)
@@ -30,7 +46,7 @@ export function useAuth() {
 
     setUsers(current => [...(current || []), newUser])
     
-    setAuthState({
+    setCurrentSession({
       isAuthenticated: true,
       user: newUser,
       isAdmin: false
@@ -42,10 +58,10 @@ export function useAuth() {
   const signIn = (email: string, password: string): { success: boolean; message: string } => {
     const user = users?.find(u => u.email === email && u.password === password)
     if (!user) {
-      return { success: false, message: 'Invalid email or password. Please try again.' }
+      return { success: false, message: 'No account found with this email and password. Please check your credentials or sign up.' }
     }
 
-    setAuthState({
+    setCurrentSession({
       isAuthenticated: true,
       user,
       isAdmin: false
@@ -56,7 +72,7 @@ export function useAuth() {
 
   const adminSignIn = (username: string, password: string): { success: boolean; message: string } => {
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      setAuthState({
+      setCurrentSession({
         isAuthenticated: true,
         user: null,
         isAdmin: true
@@ -67,11 +83,7 @@ export function useAuth() {
   }
 
   const signOut = () => {
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      isAdmin: false
-    })
+    setCurrentSession(DEFAULT_AUTH_STATE)
   }
 
   const updateUserMembership = (userId: string, membership: User['membership']) => {
@@ -80,10 +92,25 @@ export function useAuth() {
     )
     
     if (authState.user?.id === userId) {
-      setAuthState(current => ({
-        ...current,
-        user: current.user ? { ...current.user, membership } : null
-      }))
+      setCurrentSession({
+        isAuthenticated: true,
+        isAdmin: false,
+        user: authState.user ? { ...authState.user, membership } : null
+      })
+    }
+  }
+
+  const updateUserCheckoutInfo = (userId: string, customerInfo: CustomerInfo) => {
+    setUsers(current =>
+      (current || []).map(u => u.id === userId ? { ...u, customerInfo } : u)
+    )
+    
+    if (authState.user?.id === userId) {
+      setCurrentSession({
+        isAuthenticated: true,
+        isAdmin: false,
+        user: authState.user ? { ...authState.user, customerInfo } : null
+      })
     }
   }
 
@@ -94,6 +121,7 @@ export function useAuth() {
     adminSignIn,
     signOut,
     updateUserMembership,
+    updateUserCheckoutInfo,
     users
   }
 }
