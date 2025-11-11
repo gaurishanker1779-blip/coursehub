@@ -105,7 +105,7 @@ function App() {
   const [checkoutMembershipPrice, setCheckoutMembershipPrice] = useState(0)
   const [dopamineReward, setDopamineReward] = useState<'enroll' | 'purchase' | 'complete' | 'login' | 'streak' | undefined>()
 
-  const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership } = useAuth()
+  const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership, users } = useAuth()
   const {
     paymentRequests,
     createPaymentRequest,
@@ -402,6 +402,7 @@ function App() {
             paymentRequests={paymentRequests}
             onApprovePayment={handleApprovePayment}
             onRejectPayment={rejectPaymentRequest}
+            users={users || []}
           />
         )}
       </main>
