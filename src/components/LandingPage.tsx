@@ -314,7 +314,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-          >
+            <div className="text-center mb-12">
             <div className="text-center mb-12">
               <motion.div
                 animate={{ 
@@ -332,14 +332,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                   🎁 5 PREMIUM COURSES - 100% FREE
                 </Badge>
               </motion.div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
                   Start Learning Today - Zero Cost!
-                </span>
+                  Start Learning Today - Zero Cost!
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
                 Get instant lifetime access to 5 complete professional courses worth ₹2,495 - absolutely FREE!
-              </p>
+              <motion.div
               <motion.div
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -347,12 +347,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               >
                 ⚡ Limited Time Offer • Claim Now ⚡
               </motion.div>
-            </div>
 
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {[
                 {
-                  title: 'Python Full Stack Web Development',
+                  title: 'Python Full Stack Web Development',eal projects.',
                   desc: 'Master Python, Django, Flask & React. Build 10+ real projects.',
                   hours: '50+',
                   projects: '10+',
@@ -398,28 +398,28 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 >
                   <Card className="h-full border-2 border-green-500/30 bg-gradient-to-br from-card/90 to-card/60 backdrop-blur hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-500 overflow-hidden group">
                     <div className="relative h-48 overflow-hidden">
-                      <img
                         src={course.img}
-                        alt={course.title}
+                        src={course.img}
+                        alt={course.title}-hover:scale-110"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                      <div className="absolute top-3 right-3">
                       <div className="absolute top-3 right-3">
                         <Badge className="bg-green-500 text-white border-0 text-xs px-2 py-1 font-bold">
                           FREE
-                        </Badge>
                       </div>
                       <div className="absolute top-3 left-3">
+                      <div className="absolute top-3 left-3">y-1 font-bold line-through">
                         <Badge className="bg-red-500 text-white border-0 text-xs px-2 py-1 font-bold line-through">
                           {course.value}
                         </Badge>
-                      </div>
+                      </div>ansparent" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                       <div className="absolute bottom-3 left-3 right-3">
                         <div className="flex items-center gap-2 text-white text-xs">
                           <div className="flex -space-x-1">
                             {[1, 2, 3].map((i) => (
                               <img
-                                key={i}
+                                key={i}ttps://i.pravatar.cc/150?u=stu${idx}${i}`}
                                 src={`https://i.pravatar.cc/150?u=stu${idx}${i}`}
                                 alt=""
                                 className="w-5 h-5 rounded-full border border-white"
@@ -427,7 +427,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                             ))}
                           </div>
                           <span className="font-semibold">{course.students} enrolled</span>
-                        </div>
+                      </div>
                       </div>
                     </div>
                     <CardContent className="p-5">
@@ -441,15 +441,15 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                         <div className="flex items-center gap-1.5">
                           <Clock size={14} className="text-accent shrink-0" />
                           <span>{course.hours} Hours</span>
-                        </div>
+                        <div className="flex items-center gap-1.5">
                         <div className="flex items-center gap-1.5">
                           <Trophy size={14} className="text-accent shrink-0" />
                           <span>{course.projects} Projects</span>
-                        </div>
                       </div>
                       <Button
+                      <Buttonck={() => onNavigate('courses')}
                         onClick={() => onNavigate('courses')}
-                        size="sm"
+                        size="sm"green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
                         className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
                       >
                         Get Free Access
@@ -486,7 +486,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                     <div>
                       <div className="text-4xl font-bold mb-2 bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                         Worth ₹2,495
-                      </div>
+                      <div className="text-5xl font-black text-green-500 mb-4">
                       <div className="text-5xl font-black text-green-500 mb-4">
                         NOW FREE!
                       </div>
@@ -503,21 +503,21 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                       <div className="flex items-center justify-center gap-2">
                         <CheckCircle size={16} weight="fill" className="text-green-500" />
                         <span>All Future Updates</span>
-                      </div>
+                      <div className="flex items-center justify-center gap-2">
                       <div className="flex items-center justify-center gap-2">
                         <CheckCircle size={16} weight="fill" className="text-green-500" />
                         <span>No Credit Card</span>
                       </div>
-                    </div>
                     <Button
+                    <Buttonurses')}
                       onClick={() => onNavigate('courses')}
-                      size="lg"
+                      size="lg"over:to-primary/90 shadow-lg"
                       className="w-full bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 shadow-lg"
                     >
                       Claim All Courses FREE
                       <ArrowRight className="ml-2" size={18} />
                     </Button>
-                  </div>
+                </Card>
                 </Card>
               </motion.div>
             </div>
@@ -533,7 +533,6 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 Experience our world-class teaching quality with these free courses, then explore our premium catalog of 500+ courses 
                 to continue your learning journey. <strong className="text-accent">No strings attached!</strong>
               </p>
-            </motion.div>
           </motion.div>
         </div>
       </section>
