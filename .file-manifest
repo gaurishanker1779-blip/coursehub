@@ -15,6 +15,7 @@ package-lock.json
 package.json
 packages/spark-tools/LICENSE
 packages/spark-tools/package.json
+pids/4435.pid
 public/_redirects
 render.yaml
 runtime.config.json
