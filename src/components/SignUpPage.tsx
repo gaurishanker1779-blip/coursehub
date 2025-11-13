@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 interface SignUpPageProps {
-  onSignUp: (email: string, password: string, name: string) => { success: boolean; message: string }
+  onSignUp: (email: string, password: string, name: string) => Promise<{ success: boolean; message: string }>
   onNavigate: (page: string) => void
 }
 
@@ -15,8 +15,9 @@ export function SignUpPage({ onSignUp, onNavigate }: SignUpPageProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!name || !email || !password || !confirmPassword) {
@@ -34,7 +35,8 @@ export function SignUpPage({ onSignUp, onNavigate }: SignUpPageProps) {
       return
     }
 
-    const result = onSignUp(email, password, name)
+    setLoading(true)
+    const result = await onSignUp(email, password, name)
 
     if (result.success) {
       toast.success(result.message)
@@ -42,6 +44,7 @@ export function SignUpPage({ onSignUp, onNavigate }: SignUpPageProps) {
     } else {
       toast.error(result.message)
     }
+    setLoading(false)
   }
 
   return (
@@ -99,8 +102,8 @@ export function SignUpPage({ onSignUp, onNavigate }: SignUpPageProps) {
                 className="bg-background/50"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-              Sign Up
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+              {loading ? 'Creating account...' : 'Sign Up'}
             </Button>
           </form>
 

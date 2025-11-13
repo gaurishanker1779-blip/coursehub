@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useKV } from '@github/spark/hooks'
 import { Toaster } from 'sonner'
 import { toast } from 'sonner'
 import { Header } from './components/Header'
@@ -99,11 +98,18 @@ function App() {
 
   const [currentPage, setCurrentPage] = useState<Page>(initialRoute.page)
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(initialCourse)
-  const [cartItems, setCartItems] = useKV<Course[]>('cartItems', [])
+  const [cartItems, setCartItems] = useState<Course[]>(() => {
+    const stored = localStorage.getItem('cartItems')
+    return stored ? JSON.parse(stored) : []
+  })
   const [checkoutType, setCheckoutType] = useState<'course' | 'membership'>('course')
   const [checkoutMembershipType, setCheckoutMembershipType] = useState<'weekly' | 'monthly' | 'yearly'>('weekly')
   const [checkoutMembershipPrice, setCheckoutMembershipPrice] = useState(0)
   const [dopamineReward, setDopamineReward] = useState<'enroll' | 'purchase' | 'complete' | 'login' | 'streak' | undefined>()
+
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems))
+  }, [cartItems])
 
   const { authState, signUp, signIn, adminSignIn, signOut, updateUserMembership, updateUserCheckoutInfo, users } = useAuth()
   const {
@@ -144,28 +150,26 @@ function App() {
 
   const handleAddToCart = (course: Course) => {
     setCartItems(current => {
-      const items = current || []
-      if (items.some(item => item.id === course.id)) {
-        return items
+      if (current.some(item => item.id === course.id)) {
+        return current
       }
-      return [...items, course]
+      return [...current, course]
     })
   }
 
   const handleBuyNow = (course: Course) => {
     setCartItems(current => {
-      const items = current || []
-      if (!items.some(item => item.id === course.id)) {
-        return [...items, course]
+      if (!current.some(item => item.id === course.id)) {
+        return [...current, course]
       }
-      return items
+      return current
     })
     setCheckoutType('course')
     setCurrentPage('checkout')
   }
 
   const handleRemoveFromCart = (courseId: string) => {
-    setCartItems(current => (current || []).filter(item => item.id !== courseId))
+    setCartItems(current => current.filter(item => item.id !== courseId))
   }
 
   const handleCheckout = () => {
@@ -196,8 +200,7 @@ function App() {
         customerInfo
       )
     } else {
-      const items = cartItems || []
-      items.forEach(course => {
+      cartItems.forEach(course => {
         createPaymentRequest(
           authState.user!.id,
           authState.user!.email,
@@ -229,10 +232,10 @@ function App() {
     }
   }
 
-  const handleFreeAccess = (course: Course) => {
+  const handleFreeAccess = async (course: Course) => {
     if (!authState.user) return
 
-    const result = enrollInFreeCourse(authState.user.id, course.id)
+    const result = await enrollInFreeCourse(authState.user.id, course.id)
     if (result.success) {
       setDopamineReward('enroll')
       toast.success(result.message, {
@@ -291,7 +294,7 @@ function App() {
         onSignOut={signOut}
         onNavigate={handleNavigate}
         currentPage={currentPage}
-        cartCount={(cartItems || []).length}
+        cartCount={cartItems.length}
       />
 
       <main className="flex-1">
@@ -304,7 +307,7 @@ function App() {
             courses={allCourses}
             onAddToCart={handleAddToCart}
             onViewCourse={handleViewCourse}
-            cartItems={cartItems || []}
+            cartItems={cartItems}
             purchasedCourseIds={purchasedCourseIds}
             enrolledCourseIds={enrolledCourseIds}
           />
@@ -316,7 +319,7 @@ function App() {
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
             onFreeAccess={handleFreeAccess}
-            isInCart={(cartItems || []).some(item => item.id === selectedCourse.id)}
+            isInCart={cartItems.some(item => item.id === selectedCourse.id)}
             isPurchased={purchasedCourseIds.includes(selectedCourse.id)}
             isEnrolled={enrolledCourseIds.includes(selectedCourse.id)}
             onNavigate={handleNavigate}
@@ -373,7 +376,7 @@ function App() {
 
         {currentPage === 'cart' && (
           <CartPage
-            cartItems={cartItems || []}
+            cartItems={cartItems}
             onRemoveFromCart={handleRemoveFromCart}
             onCheckout={handleCheckout}
             onNavigate={handleNavigate}
@@ -382,7 +385,7 @@ function App() {
 
         {currentPage === 'checkout' && (
           <CheckoutPage
-            items={checkoutType === 'course' ? (cartItems || []) : []}
+            items={checkoutType === 'course' ? cartItems : []}
             membershipType={checkoutType === 'membership' ? checkoutMembershipType : undefined}
             membershipPrice={checkoutType === 'membership' ? checkoutMembershipPrice : undefined}
             onConfirmPayment={handleConfirmPayment}

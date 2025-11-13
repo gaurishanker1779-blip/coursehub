@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 interface SignInPageProps {
-  onSignIn: (email: string, password: string) => { success: boolean; message: string }
+  onSignIn: (email: string, password: string) => Promise<{ success: boolean; message: string }>
   onAdminSignIn: (username: string, password: string) => { success: boolean; message: string }
   onNavigate: (page: string) => void
 }
@@ -15,8 +15,9 @@ export function SignInPage({ onSignIn, onAdminSignIn, onNavigate }: SignInPagePr
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!email || !password) {
@@ -24,11 +25,12 @@ export function SignInPage({ onSignIn, onAdminSignIn, onNavigate }: SignInPagePr
       return
     }
 
+    setLoading(true)
     let result
     if (isAdmin) {
       result = onAdminSignIn(email, password)
     } else {
-      result = onSignIn(email, password)
+      result = await onSignIn(email, password)
     }
 
     if (result.success) {
@@ -37,6 +39,7 @@ export function SignInPage({ onSignIn, onAdminSignIn, onNavigate }: SignInPagePr
     } else {
       toast.error(result.message)
     }
+    setLoading(false)
   }
 
   return (
@@ -74,8 +77,8 @@ export function SignInPage({ onSignIn, onAdminSignIn, onNavigate }: SignInPagePr
                 className="bg-background/50"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-              Sign In
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
 
